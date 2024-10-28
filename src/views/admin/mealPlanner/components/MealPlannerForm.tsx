@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Chakra imports
 import {
@@ -22,6 +21,8 @@ import {
 import UserPreferencesForMealPlanForm from "./UserPreferencesForMealPlanForm";
 import MealPlanDetails from "./MealPlanDetails";
 import Card from "components/card/Card";
+import { getAuth } from "firebase/auth";
+import { fetchFavouriteMealsForUser } from "database/getFunctions";
 
 export default function MealPlannerForm(props: {
   chosenCalories: number | null;
@@ -86,6 +87,14 @@ export default function MealPlannerForm(props: {
     lunch: null,
     dinner: null
   });
+  const [useFavoritesForPlan, setUseFavoritesForPlan] = useState(false);
+  const [favoriteMealsList, setFavoriteMealsList] = useState("");
+
+  const handleFavoritesCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setUseFavoritesForPlan(event.target.checked);
+  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -141,6 +150,24 @@ export default function MealPlannerForm(props: {
     });
   }, [chosenCalories, chosenNutrients]);
 
+  useEffect(() => {
+    const loadFavouriteMeals = async () => {
+      try {
+        const userId = getAuth().currentUser?.uid;
+        if (userId) {
+          const favoriteMeals = await fetchFavouriteMealsForUser(userId);
+
+          const formattedMealsList = favoriteMeals.join(", ");
+          setFavoriteMealsList(formattedMealsList);
+          console.log(formattedMealsList);
+        }
+      } catch (error) {
+        console.error("Error fetching favorite meals:", error);
+      }
+    };
+
+    loadFavouriteMeals();
+  }, []);
   console.log(userPreferences);
 
   const cuisineTranslation: { [key: string]: string } = {
@@ -189,7 +216,7 @@ export default function MealPlannerForm(props: {
 
   console.log("TRANSLATED --->", promptCuisine);
 
-  const prompt = `Вие сте опитен диетолог, който наблюдава пациентите да консумират само ядлива и традиционна храна от
+  const promptOpenAI = `Вие сте опитен диетолог, който наблюдава пациентите да консумират само ядлива и традиционна храна от
   ${cuisinePhrase} кухня/кухни (${promptCuisine}). Фокусирайте се върху създаването на ТОЧЕН, разнообразен и вкусен дневен хранителен план, съставен от следните ограничения: калории (${
     userPreferences.Calories
   }), протеин (${userPreferences.Protein}), мазнини (${
@@ -198,7 +225,11 @@ export default function MealPlannerForm(props: {
     userPreferences.Carbohydrates
   }). Никога не превишавайте или намалявайте предоставените лимити и се УВЕРЕТЕ, че калориите и мазнините ВИНАГИ са същите като предоставените лимити. 
     Осигурете точността на количествата, като същевременно се придържате към лимитите. 
-    Уверете се, че предоставените от вас хранения се различават от тези, които сте предоставили в предишни заявки. Давай винаги нови и вкусни храни, така че винаги да се създаде уникално и разнообразно меню.
+    ${
+      useFavoritesForPlan
+        ? `Уверете се, че при генериране използвате САМО тези храни: ${favoriteMealsList} `
+        : "Уверете се, че предоставените от вас хранения се различават от тези, които сте предоставили в предишни заявки. Давай винаги нови и вкусни храни, така че винаги да се създаде уникално и разнообразно меню."
+    }
     Експортирайте в JSON ТОЧНО КАТО ПРЕДОСТАВЕНАТА СТРУКТУРА в съдържанието на този заявка, без да добавяте 'json' ключова дума с обратни кавички. 
     Отговорът трябва да бъде чист JSON, нищо друго. Това означава, че вашият отговор не трябва да започва с 'json*backticks*{data}*backticks*' или '*backticks*{data}*backticks*'.
     Създайте ми дневно меню с ниско съдържание на мазнини, включващо едно ястие за закуска, три за обяд (третото трябва да е десерт) и две за вечеря (второто да бъде десерт). 
@@ -251,7 +282,11 @@ export default function MealPlannerForm(props: {
     userPreferences.Carbohydrates
   }). Никога не превишавайте или намалявайте предоставените лимити и се УВЕРЕТЕ, че калориите и мазнините ВИНАГИ са същите като предоставените лимити. 
     Осигурете точността на количествата, като същевременно се придържате към лимитите. 
-    Уверете се, че предоставените от вас хранения се различават от тези, които сте предоставили в предишни заявки. Давай винаги нови и вкусни храни, така че винаги да се създаде уникално и разнообразно меню.
+    ${
+      useFavoritesForPlan
+        ? `Уверете се, че при генериране използвате САМО тези храни: ${favoriteMealsList} `
+        : "Уверете се, че предоставените от вас хранения се различават от тези, които сте предоставили в предишни заявки. Давай винаги нови и вкусни храни, така че винаги да се създаде уникално и разнообразно меню."
+    }
     Експортирайте в JSON ТОЧНО КАТО ПРЕДОСТАВЕНАТА СТРУКТУРА в съдържанието на този заявка, без да добавяте 'json' ключова дума с обратни кавички. 
     Отговорът трябва да бъде чист JSON, нищо друго. Това означава, че вашият отговор не трябва да започва с 'json*backticks*{data}*backticks*' или '*backticks*{data}*backticks*'.
     Създайте ми дневно меню с ниско съдържание на мазнини, включващо САМО ЕДНО ястие за закуска, ТРИ за обяд (третото трябва да е десерт) и ДВЕ за вечеря (второто да бъде десерт). 
@@ -306,7 +341,7 @@ export default function MealPlannerForm(props: {
       setIsPlanGeneratedWithOpenAI(true);
       setIsPlanGeneratedWithGemini(false);
       setIsLoading(true);
-      console.log("PROMPT --->", prompt);
+      console.log("PROMPT --->", promptOpenAI);
 
       const response = await fetch(
         "https://api.openai.com/v1/chat/completions",
@@ -321,7 +356,7 @@ export default function MealPlannerForm(props: {
             messages: [
               {
                 role: "user",
-                content: prompt
+                content: promptOpenAI
               }
             ]
           })
@@ -539,7 +574,7 @@ export default function MealPlannerForm(props: {
       setIsPlanGeneratedWithGemini(true);
       setIsPlanGeneratedWithOpenAI(false);
       setIsLoading(true);
-      console.log("PROMPT --->", prompt);
+      console.log("PROMPT --->", promptGemini);
       const response = await fetch(
         "https://nutri-api.noit.eu/geminiGenerateResponse",
         {
@@ -548,7 +583,9 @@ export default function MealPlannerForm(props: {
             "Content-Type": "application/json",
             "x-api-key": "349f35fa-fafc-41b9-89ed-ff19addc3494"
           },
-          body: JSON.stringify({ text: promptGemini })
+          body: JSON.stringify({
+            text: promptGemini
+          })
         }
       );
 
@@ -780,6 +817,10 @@ export default function MealPlannerForm(props: {
                         handleCheckboxChange={handleCheckboxChange}
                         generatePlanWithOpenAI={generatePlanWithOpenAI}
                         generatePlanWithGemini={generatePlanWithGemini}
+                        useFavoritesForPlan={useFavoritesForPlan}
+                        handleFavoritesCheckboxChange={
+                          handleFavoritesCheckboxChange
+                        }
                       />
                     </SimpleGrid>
                     <MealLoading />
@@ -793,6 +834,10 @@ export default function MealPlannerForm(props: {
                         handleCheckboxChange={handleCheckboxChange}
                         generatePlanWithOpenAI={generatePlanWithOpenAI}
                         generatePlanWithGemini={generatePlanWithGemini}
+                        useFavoritesForPlan={useFavoritesForPlan}
+                        handleFavoritesCheckboxChange={
+                          handleFavoritesCheckboxChange
+                        }
                       />
                     </SimpleGrid>
                     {mealPlan.dinner !== null && requestFailed == false ? (
@@ -832,6 +877,8 @@ export default function MealPlannerForm(props: {
                   handleCheckboxChange={handleCheckboxChange}
                   generatePlanWithOpenAI={generatePlanWithOpenAI}
                   generatePlanWithGemini={generatePlanWithGemini}
+                  useFavoritesForPlan={useFavoritesForPlan}
+                  handleFavoritesCheckboxChange={handleFavoritesCheckboxChange}
                 />
               </SimpleGrid>
             )}

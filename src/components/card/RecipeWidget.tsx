@@ -14,7 +14,7 @@ import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import { saveFavouriteMeal } from "../../database/setFunctions";
 import { deleteFavouriteMeal } from "../../database/deleteFunctions";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { fetchFavouriteMealsForUser } from "database/getFunctions";
 
 export default function RecipeWidget(props: {
   image?: string;
@@ -28,33 +28,19 @@ export default function RecipeWidget(props: {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
 
   useEffect(() => {
-    // Fetch user's favorite meals on mount to check if this meal is liked
-    const fetchFavouriteMeals = async () => {
+    const checkFavouriteMeals = async () => {
       try {
         const userId = getAuth().currentUser?.uid;
         if (userId) {
-          const db = getFirestore();
-          const userDocRef = doc(
-            db,
-            "additionalData2",
-            userId,
-            "dataEntries",
-            "favouriteMeals"
-          );
-          const docSnapshot = await getDoc(userDocRef);
-
-          // Check if the current meal is in the user's favorites
-          if (docSnapshot.exists()) {
-            const data = docSnapshot.data();
-            setLike(data.favouriteMeals?.includes(author) || false);
-          }
+          const favouriteMeals = await fetchFavouriteMealsForUser(userId);
+          setLike(favouriteMeals.includes(author));
         }
       } catch (error) {
-        console.error("Error fetching favourite meals:", error);
+        console.error("Error checking favourite meals:", error);
       }
     };
 
-    fetchFavouriteMeals();
+    checkFavouriteMeals();
   }, [author]);
 
   const handleLikeClick = async () => {

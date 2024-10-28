@@ -26,6 +26,10 @@ interface UserPreferencesInputProps {
   handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   generatePlanWithOpenAI: () => void;
   generatePlanWithGemini: () => void;
+  useFavoritesForPlan: boolean;
+  handleFavoritesCheckboxChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
 }
 const fieldName: string[] = [
   "калории",
@@ -37,6 +41,8 @@ const fieldName: string[] = [
 ];
 
 const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
+  useFavoritesForPlan,
+  handleFavoritesCheckboxChange,
   userPreferences,
   handleInputChange,
   handleCheckboxChange,
@@ -312,27 +318,27 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
           </Box>
         </Button>
       </SimpleGrid>
-      <Box my="10px">
+      <Box mt="50px">
         <Flex alignItems="center" justifyContent="center">
           <HSeparator style={{ flex: 1, marginRight: "10px" }} />
+          <Box boxSize="30px" mx="8px">
+            <GiHearts size="30px" color="rgba(135, 140, 189, 0.3)" />
+          </Box>
           <Text mx="5px" color="rgba(135, 140, 189, 0.3)" fontSize="xl">
-            Или
+            Или създайте хранителен план от вашите любими храни
           </Text>
+          <Checkbox
+            ml="8px"
+            colorScheme="purple"
+            isChecked={useFavoritesForPlan}
+            onChange={handleFavoritesCheckboxChange}
+          />
+          <Box boxSize="30px" mx="8px">
+            <GiHearts size="30px" color="rgba(135, 140, 189, 0.3)" />
+          </Box>
           <HSeparator style={{ flex: 1, marginLeft: "10px" }} />
         </Flex>
       </Box>
-      <Button
-        onClick={handleSubmitWithGemini}
-        minH="60px"
-        minW="100%"
-        backgroundColor={bgButton}
-        color={brandColor}
-      >
-        Създайте хранителен план от вашите любими храни
-        <Box boxSize="30px" ml="8px">
-          <GiHearts size="30px" color="red" />
-        </Box>
-      </Button>
     </Card>
   );
 };
