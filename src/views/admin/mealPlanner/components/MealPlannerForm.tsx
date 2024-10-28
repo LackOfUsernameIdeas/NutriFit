@@ -19,11 +19,9 @@ import {
   MealPlan2,
   UserIntakes
 } from "../../../../variables/weightStats";
-import { saveMealPlan } from "../../../../database/setFunctions";
 import UserPreferencesForMealPlanForm from "./UserPreferencesForMealPlanForm";
 import MealPlanDetails from "./MealPlanDetails";
 import Card from "components/card/Card";
-import { getAuth } from "firebase/auth";
 
 export default function MealPlannerForm(props: {
   chosenCalories: number | null;

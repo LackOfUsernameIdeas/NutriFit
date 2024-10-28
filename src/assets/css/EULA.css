@@ -1,0 +1,68 @@
+.eula-container {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: white;
+    background-color: #282c34; /* Dark background for contrast */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .back-button {
+    background-color: #8351f9; /* Main theme color */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .back-button:hover {
+    background-color: #6c5ce7; /* Hover state */
+    transform: scale(1.05);
+  }
+  
+  .eula-title {
+    margin-bottom: 0.5em;
+    color: #e0e0e0; /* Light gray for the title */
+    font-size: 24px;
+  }
+  
+  .eula-date {
+    font-size: 14px;
+    margin-bottom: 1em;
+    color: rgba(224, 224, 224, 0.8); /* Lighter gray with blue undertone */
+  }
+  
+  .eula-intro {
+    margin-bottom: 1em;
+  }
+  
+  .eula-section {
+    margin-bottom: 1em;
+    padding: 10px;
+    background-color: rgba(65, 71, 93, 0.5); /* Blue-gray background for sections */
+    border-radius: 5px;
+  }
+  
+  .eula-section strong {
+    display: block;
+    margin-bottom: 0.5em;
+    color: #8351f9; /* Purple for headings */
+  }
+  
+  .highlight {
+    color: #8351f9; /* Consistent highlight color */
+    font-weight: bold;
+  }
+  
+  .contact-link {
+    color: #007bff; /* Blue color for links */
+    text-decoration: underline;
+  }
+  

@@ -3,12 +3,9 @@ import React from "react";
 import {
   Input,
   Button,
-  CheckboxGroup,
   Checkbox,
-  HStack,
   Text,
   Flex,
-  Icon,
   Box,
   Image,
   SimpleGrid,
@@ -17,9 +14,11 @@ import {
 } from "@chakra-ui/react";
 import OpenAIImage from "../../../../assets/img/layout/openai.png";
 import GeminiImage from "../../../../assets/img/layout/geminiStar.png";
+import { GiHearts } from "react-icons/gi";
 import { UserPreferencesForMealPlan } from "../../../../variables/weightStats";
 import { useSpring, animated } from "react-spring";
 import Card from "components/card/Card";
+import { HSeparator } from "components/separator/Separator";
 
 interface UserPreferencesInputProps {
   userPreferences: UserPreferencesForMealPlan;
@@ -103,7 +102,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     }
   };
 
-  const handleSubmitWithBgGPT = (event: React.FormEvent) => {
+  const handleSubmitWithGemini = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (isNutrientDataValid()) {
@@ -111,34 +110,12 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     }
   };
 
-  const englishCuisines = [
-    "Bulgarian",
-    // "English",
-    // "Chinese",
-    // "Mexican",
-    // "Indian",
-    "Spanish",
-    "Italian",
-    "French"
-  ];
+  const englishCuisines = ["Bulgarian", "Spanish", "Italian", "French"];
 
-  const bulgarianCuisines = [
-    "Българска",
-    // "Английска",
-    // "Китайска",
-    // "Мексиканска",
-    // "Индийска",
-    "Испанска",
-    "Италианска",
-    "Френска"
-  ];
+  const bulgarianCuisines = ["Българска", "Испанска", "Италианска", "Френска"];
 
   const countriesFlags = [
     "https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Bulgaria.svg",
-    // "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png",
-    // "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/800px-Flag_of_the_People%27s_Republic_of_China.svg.png",
-    // "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Mexico.svg/1200px-Flag_of_Mexico.svg.png",
-    // "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/1280px-Bandera_de_Espa%C3%B1a.svg.png",
     "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png",
     "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/800px-Flag_of_France.svg.png"
@@ -323,7 +300,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
           </Box>
         </Button>
         <Button
-          onClick={handleSubmitWithBgGPT}
+          onClick={handleSubmitWithGemini}
           minH="60px"
           minW="100%"
           backgroundColor={bgButton}
@@ -335,6 +312,27 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
           </Box>
         </Button>
       </SimpleGrid>
+      <Box my="10px">
+        <Flex alignItems="center" justifyContent="center">
+          <HSeparator style={{ flex: 1, marginRight: "10px" }} />
+          <Text mx="5px" color="rgba(135, 140, 189, 0.3)" fontSize="xl">
+            Или
+          </Text>
+          <HSeparator style={{ flex: 1, marginLeft: "10px" }} />
+        </Flex>
+      </Box>
+      <Button
+        onClick={handleSubmitWithGemini}
+        minH="60px"
+        minW="100%"
+        backgroundColor={bgButton}
+        color={brandColor}
+      >
+        Създайте хранителен план от вашите любими храни
+        <Box boxSize="30px" ml="8px">
+          <GiHearts size="30px" color="red" />
+        </Box>
+      </Button>
     </Card>
   );
 };

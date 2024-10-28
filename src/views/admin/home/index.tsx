@@ -16,7 +16,7 @@ import GenderedDropdowns from "./components/GenderedDropdowns";
 import AllUsersDropdown from "./components/AllUsersDropdown";
 import Loading from "../weightStats/components/Loading";
 import { ColumnChart } from "components/charts/BarCharts";
-import RecipeWidget from "components/card/NFT";
+import RecipeWidget from "components/card/RecipeWidget";
 import RecipeModal from "components/rankings/RecipeModal";
 import Card from "components/card/Card";
 import { useSpring, animated } from "react-spring";
@@ -427,9 +427,9 @@ export default function UserReports() {
                     </Tooltip>
                   </Flex>
                 }
-                author={<Box></Box>}
+                author={allMeals[0]?.name}
                 image={allMeals[0]?.mealData?.image}
-                currentbid={
+                values={
                   <Box>
                     <Flex
                       alignItems="center"

@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { HSeparator } from "components/separator/Separator";
 import FadeInWrapper from "components/wrapper/FadeInWrapper";
-import RecipeWidget from "components/card/NFT";
+import RecipeWidget from "components/card/RecipeWidget";
 import Card from "components/card/Card";
 import {
   MdOutlineKeyboardArrowRight,
@@ -357,22 +357,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={
-                                <Flex
-                                  direction="column"
-                                  justify="center"
-                                  align="center"
-                                  pt="2px"
-                                  w="100%"
-                                  mt="5px"
-                                ></Flex>
+                              author={appetizerName
                               }
                               image={
                                 (mealPlanImages as any)[mealType].appetizer
                                   ? (mealPlanImages as any)[mealType].appetizer
                                   : ""
                               }
-                              currentbid={
+                              values={
                                 <Box>
                                   <Flex
                                     alignItems="center"
@@ -565,21 +557,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                               </Flex>
                             }
                             author={
-                              <Flex
-                                direction="column"
-                                justify="center"
-                                align="center"
-                                pt="2px"
-                                w="100%"
-                                mt="5px"
-                              ></Flex>
+                          mainName
                             }
                             image={
                               (mealPlanImages as any)[mealType].main
                                 ? (mealPlanImages as any)[mealType].main
                                 : ""
                             }
-                            currentbid={
+                            values={
                               <Box>
                                 <Flex
                                   alignItems="center"
@@ -779,22 +764,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={
-                                <Flex
-                                  direction="column"
-                                  justify="center"
-                                  align="center"
-                                  pt="2px"
-                                  w="100%"
-                                  mt="5px"
-                                ></Flex>
+                              author={dessertName
                               }
                               image={
                                 (mealPlanImages as any)[mealType].dessert
                                   ? (mealPlanImages as any)[mealType].dessert
                                   : ""
                               }
-                              currentbid={
+                              values={
                                 <Box>
                                   <Flex
                                     alignItems="center"
@@ -1051,22 +1028,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={
-                                <Flex
-                                  direction="column"
-                                  justify="center"
-                                  align="center"
-                                  pt="2px"
-                                  w="100%"
-                                  mt="5px"
-                                ></Flex>
+                              author={appetizerName
                               }
                               image={
                                 (mealPlanImages as any)[mealType].appetizer
                                   ? (mealPlanImages as any)[mealType].appetizer
                                   : ""
                               }
-                              currentbid={
+                              values={
                                 <Box>
                                   <Flex
                                     alignItems="center"
@@ -1258,22 +1227,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                 </Tooltip>
                               </Flex>
                             }
-                            author={
-                              <Flex
-                                direction="column"
-                                justify="center"
-                                align="center"
-                                pt="2px"
-                                w="100%"
-                                mt="5px"
-                              ></Flex>
+                            author={mainName
                             }
                             image={
                               (mealPlanImages as any)[mealType].main
                                 ? (mealPlanImages as any)[mealType].main
                                 : ""
                             }
-                            currentbid={
+                            values={
                               <Box>
                                 <Flex
                                   alignItems="center"
@@ -1473,22 +1434,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={
-                                <Flex
-                                  direction="column"
-                                  justify="center"
-                                  align="center"
-                                  pt="2px"
-                                  w="100%"
-                                  mt="5px"
-                                ></Flex>
+                              author={dessertName
                               }
                               image={
                                 (mealPlanImages as any)[mealType].dessert
                                   ? (mealPlanImages as any)[mealType].dessert
                                   : ""
                               }
-                              currentbid={
+                              values={
                                 <Box>
                                   <Flex
                                     alignItems="center"
@@ -1735,22 +1688,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={
-                                <Flex
-                                  direction="column"
-                                  justify="center"
-                                  align="center"
-                                  pt="2px"
-                                  w="100%"
-                                  mt="5px"
-                                ></Flex>
+                              author={appetizerName
                               }
                               image={
                                 (mealPlanImages as any)[mealType].appetizer
                                   ? (mealPlanImages as any)[mealType].appetizer
                                   : ""
                               }
-                              currentbid={
+                              values={
                                 <Box>
                                   <Flex
                                     alignItems="center"
@@ -1942,22 +1887,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                 </Tooltip>
                               </Flex>
                             }
-                            author={
-                              <Flex
-                                direction="column"
-                                justify="center"
-                                align="center"
-                                pt="2px"
-                                w="100%"
-                                mt="5px"
-                              ></Flex>
+                            author={mainName
                             }
                             image={
                               (mealPlanImages as any)[mealType].main
                                 ? (mealPlanImages as any)[mealType].main
                                 : ""
                             }
-                            currentbid={
+                            values={
                               <Box>
                                 <Flex
                                   alignItems="center"
@@ -2157,22 +2094,14 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={
-                                <Flex
-                                  direction="column"
-                                  justify="center"
-                                  align="center"
-                                  pt="2px"
-                                  w="100%"
-                                  mt="5px"
-                                ></Flex>
+                              author={dessertName
                               }
                               image={
                                 (mealPlanImages as any)[mealType].dessert
                                   ? (mealPlanImages as any)[mealType].dessert
                                   : ""
                               }
-                              currentbid={
+                              values={
                                 <Box>
                                   <Flex
                                     alignItems="center"
