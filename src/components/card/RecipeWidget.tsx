@@ -6,6 +6,7 @@ import {
   Icon,
   Image,
   Text,
+  Link,
   useColorModeValue
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
@@ -33,7 +34,13 @@ export default function RecipeWidget(props: {
         const userId = getAuth().currentUser?.uid;
         if (userId) {
           const db = getFirestore();
-          const userDocRef = doc(db, "additionalData2", userId, "dataEntries", "favouriteMeals");
+          const userDocRef = doc(
+            db,
+            "additionalData2",
+            userId,
+            "dataEntries",
+            "favouriteMeals"
+          );
           const docSnapshot = await getDoc(userDocRef);
 
           // Check if the current meal is in the user's favorites
@@ -73,15 +80,43 @@ export default function RecipeWidget(props: {
       <Flex direction={{ base: "column" }} justify="center">
         <Box mb={{ base: "20px", "2xl": "20px" }} position="relative">
           {image && (
-            <Image
-              src={image}
-              w={{ base: "100%", "3xl": "100%" }}
-              h={{ base: "100%", "3xl": "100%" }}
-              borderRadius="20px"
-              maxH={{ base: "400px" }}
-              objectFit="cover"
-            />
+            <Link href={image} target="_blank">
+              <Image
+                src={image}
+                w={{ base: "100%", "3xl": "100%" }}
+                h={{ base: "100%", "3xl": "100%" }}
+                borderRadius="20px"
+                maxH={{ base: "400px", md: "300px", lg: "220px" }}
+                objectFit="cover"
+              />
+            </Link>
           )}
+          <Flex
+            justify="center"
+            direction={{
+              base: "row",
+              md: "column",
+              lg: "row",
+              xl: "column",
+              "2xl": "row"
+            }}
+            mt="20px"
+          >
+            <Text
+              color={textColor}
+              fontSize={{
+                base: "xl",
+                md: "lg",
+                lg: "lg",
+                xl: "lg",
+                "2xl": "md",
+                "3xl": "lg"
+              }}
+              fontWeight="bold"
+            >
+              {name}
+            </Text>
+          </Flex>
           <Button
             position="absolute"
             bg="white"
@@ -107,9 +142,13 @@ export default function RecipeWidget(props: {
         </Box>
         <Flex flexDirection="column" justify="space-between" h="100%">
           <Flex justify="center">
-            <Text color={textColor} fontSize="lg" fontWeight="bold">
-              {name}
-            </Text>
+            <Text
+              color="secondaryGray.600"
+              fontSize={{
+                base: "sm"
+              }}
+              fontWeight="400"
+            ></Text>
           </Flex>
           <Flex justify="center" mb="20px">
             {values}
