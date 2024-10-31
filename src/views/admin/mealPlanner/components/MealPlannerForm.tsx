@@ -817,6 +817,7 @@ export default function MealPlannerForm(props: {
                         handleCheckboxChange={handleCheckboxChange}
                         generatePlanWithOpenAI={generatePlanWithOpenAI}
                         generatePlanWithGemini={generatePlanWithGemini}
+                        favouriteMeals={favoriteMealsList}
                         useFavoritesForPlan={useFavoritesForPlan}
                         handleFavoritesCheckboxChange={
                           handleFavoritesCheckboxChange
@@ -834,6 +835,7 @@ export default function MealPlannerForm(props: {
                         handleCheckboxChange={handleCheckboxChange}
                         generatePlanWithOpenAI={generatePlanWithOpenAI}
                         generatePlanWithGemini={generatePlanWithGemini}
+                        favouriteMeals={favoriteMealsList}
                         useFavoritesForPlan={useFavoritesForPlan}
                         handleFavoritesCheckboxChange={
                           handleFavoritesCheckboxChange
@@ -877,6 +879,7 @@ export default function MealPlannerForm(props: {
                   handleCheckboxChange={handleCheckboxChange}
                   generatePlanWithOpenAI={generatePlanWithOpenAI}
                   generatePlanWithGemini={generatePlanWithGemini}
+                  favouriteMeals={favoriteMealsList}
                   useFavoritesForPlan={useFavoritesForPlan}
                   handleFavoritesCheckboxChange={handleFavoritesCheckboxChange}
                 />

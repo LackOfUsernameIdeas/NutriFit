@@ -10,7 +10,15 @@ import {
   Image,
   SimpleGrid,
   Tooltip,
-  useColorModeValue
+  useColorModeValue,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useMediaQuery
 } from "@chakra-ui/react";
 import OpenAIImage from "../../../../assets/img/layout/openai.png";
 import GeminiImage from "../../../../assets/img/layout/geminiStar.png";
@@ -26,6 +34,7 @@ interface UserPreferencesInputProps {
   handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   generatePlanWithOpenAI: () => void;
   generatePlanWithGemini: () => void;
+  favouriteMeals: string;
   useFavoritesForPlan: boolean;
   handleFavoritesCheckboxChange: (
     event: React.ChangeEvent<HTMLInputElement>
@@ -41,13 +50,14 @@ const fieldName: string[] = [
 ];
 
 const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
-  useFavoritesForPlan,
-  handleFavoritesCheckboxChange,
   userPreferences,
   handleInputChange,
   handleCheckboxChange,
   generatePlanWithOpenAI,
-  generatePlanWithGemini
+  generatePlanWithGemini,
+  favouriteMeals,
+  useFavoritesForPlan,
+  handleFavoritesCheckboxChange
 }) => {
   const textColor = useColorModeValue("#1a202c", "white");
   const bgButton = useColorModeValue("secondaryGray.200", "whiteAlpha.100");
@@ -56,11 +66,16 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
   const gradientLight = "linear-gradient(90deg, #422afb 0%, #715ffa 50%)";
   const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)";
   const gradient = useColorModeValue(gradientLight, gradientDark);
-  const dropdownBoxBg = useColorModeValue("secondaryGray.300", "navy.700");
   const dropdownActiveBoxBg = useColorModeValue("#d8dced", "#171F3D");
   const [validationErrors, setValidationErrors] = React.useState<{
     [key: string]: string;
   }>({});
+  const [showFavouriteMeals, setShowFavouriteMeals] = React.useState(false);
+  const [isSmallScreen] = useMediaQuery("(max-width: 767px)");
+
+  const toggleFavouriteMeals = () => {
+    setShowFavouriteMeals(!showFavouriteMeals);
+  };
 
   const DropdownPosition = useSpring({
     opacity: 1,
@@ -318,27 +333,81 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
           </Box>
         </Button>
       </SimpleGrid>
-      <Box mt="50px">
-        <Flex alignItems="center" justifyContent="center">
-          <HSeparator style={{ flex: 1, marginRight: "10px" }} />
-          <Box boxSize="30px" mx="8px">
-            <GiHearts size="30px" color="rgba(135, 140, 189, 0.3)" />
-          </Box>
-          <Text mx="5px" color="rgba(135, 140, 189, 0.3)" fontSize="xl">
-            Или създайте хранителен план от вашите любими храни
-          </Text>
-          <Checkbox
-            ml="8px"
-            colorScheme="purple"
-            isChecked={useFavoritesForPlan}
-            onChange={handleFavoritesCheckboxChange}
-          />
-          <Box boxSize="30px" mx="8px">
-            <GiHearts size="30px" color="rgba(135, 140, 189, 0.3)" />
-          </Box>
-          <HSeparator style={{ flex: 1, marginLeft: "10px" }} />
-        </Flex>
-      </Box>
+      {favouriteMeals && favouriteMeals.split(", ").length === 5 && (
+        <Box mt="50px">
+          <Flex alignItems="center" justifyContent="center">
+            <HSeparator style={{ flex: 1, marginRight: "10px" }} />
+            <Box boxSize="30px" mx="8px">
+              <GiHearts size="30px" color="rgba(135, 140, 189, 0.3)" />
+            </Box>
+            <Text mx="5px" color="rgba(135, 140, 189, 0.3)" fontSize="xl">
+              Създаване на хранителен план от вашите любими храни?
+            </Text>
+            <Checkbox
+              ml="8px"
+              colorScheme="purple"
+              isChecked={useFavoritesForPlan}
+              onChange={handleFavoritesCheckboxChange}
+            />
+            <Box boxSize="30px" mx="8px">
+              <GiHearts size="30px" color="rgba(135, 140, 189, 0.3)" />
+            </Box>
+            <HSeparator style={{ flex: 1, marginLeft: "10px" }} />
+          </Flex>
+        </Box>
+      )}
+      <Flex alignItems="center" justifyContent="center">
+        <Text
+          mt={!(favouriteMeals.split(", ").length === 5) ? "50px" : "25px"}
+          color="rgba(135, 140, 189, 0.3)"
+          fontSize="xl"
+          _hover={{ textDecoration: "underline", cursor: "pointer" }}
+          onClick={toggleFavouriteMeals}
+        >
+          Вижте вашите любими храни
+        </Text>
+      </Flex>
+      <Modal isOpen={showFavouriteMeals} onClose={toggleFavouriteMeals}>
+        <ModalOverlay />
+        <ModalContent borderRadius="20px" mx={isSmallScreen ? "20px" : "0px"}>
+          <ModalHeader fontSize="2xl" fontWeight="bold" textAlign="center">
+            Любимите ви храни
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text mb="10px">
+              По-долу са изброени <strong>любимите ви ястия</strong>. След като
+              харесате <strong>5 или повече</strong>, ще имате възможност да
+              създадете хранително меню само от тях!
+            </Text>
+            <Box mt="15px" textAlign="center">
+              {favouriteMeals ? (
+                favouriteMeals.split(", ").map((meal, index) => (
+                  <Text key={index} fontSize="lg" fontWeight="medium" mb="5px">
+                    🍽️ {meal}
+                  </Text>
+                ))
+              ) : (
+                <Text fontSize="lg" fontStyle="italic">
+                  Все още не сте харесали ястие! :( <br />
+                  За да харесате ястие, генерирайте хранително меню и натиснете
+                  сърцето горе в дясно на снимката на ястието.
+                </Text>
+              )}
+            </Box>
+          </ModalBody>
+          <ModalFooter justifyContent="center">
+            <Button
+              bg="#7c6bff"
+              color="white"
+              onClick={toggleFavouriteMeals}
+              px="20px"
+            >
+              Излез
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Card>
   );
 };
