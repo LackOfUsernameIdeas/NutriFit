@@ -1,6 +1,4 @@
 import { useState, ChangeEvent } from "react";
-
-// Chakra UI components
 import {
   Box,
   Button,
@@ -17,18 +15,20 @@ import Card from "components/card/Card";
 import { HSeparator } from "components/separator/Separator";
 
 export default function UserReports() {
-  // Chakra Color Mode
+  // Цветови стойности в зависимост от режима на цветовете
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "secondaryGray.500";
   const brandStars = useColorModeValue("brand.500", "brand.400");
 
+  // State за съхранение на съобщението
   const [message, setMessage] = useState("");
 
+  // Функция за обработка на промените в текстовото поле
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
-    // Set a character limit, in this case, 200 characters
-    if (inputValue.length <= 2000) {
+    // Ограничение на дължината на съобщението до 200 символа
+    if (inputValue.length <= 200) {
       setMessage(inputValue);
     }
   };
@@ -85,7 +85,6 @@ export default function UserReports() {
                   fontWeight="500"
                   size="lg"
                   backgroundColor={boxBg}
-                  // onChange={(email) => setEmail(email.target.value)}
                 />
                 <FormLabel
                   ms="4px"
@@ -106,7 +105,6 @@ export default function UserReports() {
                   fontWeight="500"
                   size="lg"
                   backgroundColor={boxBg}
-                  // onChange={(email) => setEmail(email.target.value)}
                 />
                 <FormLabel
                   ms="4px"
@@ -126,7 +124,7 @@ export default function UserReports() {
                   placeholder="Моля напишете вашето съобщение тук..."
                   _placeholder={{
                     verticalAlign: "top",
-                    color: `${textColorSecondary}` // Align placeholder text to the top
+                    color: `${textColorSecondary}`
                   }}
                   value={message}
                   onChange={handleInputChange}
@@ -135,11 +133,10 @@ export default function UserReports() {
                   fontWeight="500"
                   minHeight="200px"
                   size="lg"
-                  maxLength={2000} // Set the maximum number of characters
-                  resize="none" // Disable textarea resizing
+                  maxLength={2000}
+                  resize="none"
                 />
                 <Button
-                  // onClick={handleSignIn}
                   fontSize="sm"
                   variant="brand"
                   bgColor="#5D4BD7"
