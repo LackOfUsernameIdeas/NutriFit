@@ -1,5 +1,4 @@
 import React from "react";
-// Chakra imports
 import {
   Icon,
   SimpleGrid,
@@ -15,6 +14,17 @@ import Card from "components/card/Card";
 import IconBox from "components/icons/IconBox";
 import Loading from "views/admin/weightStats/components/Loading";
 
+/**
+ * Интерфейс за свойствата на компонента NutrientsDropdown.
+ * @interface GenderedDropdownsProps
+ * @property {string[]} lineChartLabels - Етикети за линиите на графиката.
+ * @property {number[]} lineChartForProtein - Данни за протеините.
+ * @property {number[]} lineChartForFat - Данни за мазнините.
+ * @property {number[]} lineChartForCarbs - Данни за въглехидратите.
+ * @property {number[]} lineChartForCalories - Данни за калориите.
+ * @property {boolean} dropdownVisible - Определя видимостта на падащото меню.
+ * @property {() => void} handleDropdownToggle - Функция за обработка на промяна на видимостта на падащото меню.
+ */
 interface GenderedDropdownsProps {
   lineChartLabels: string[];
   lineChartForProtein: number[];
@@ -25,6 +35,12 @@ interface GenderedDropdownsProps {
   handleDropdownToggle: () => void;
 }
 
+/**
+ * Компонент за показване на графики за хранителни вещества с падащо меню.
+ * @function NutrientsDropdown
+ * @param {GenderedDropdownsProps} props - Свойствата на компонента.
+ * @returns {JSX.Element} - Връща JSX елемент с графиките и падащото меню.
+ */
 export default function NutrientsDropdown({
   lineChartLabels,
   lineChartForProtein,
@@ -34,8 +50,8 @@ export default function NutrientsDropdown({
   dropdownVisible,
   handleDropdownToggle
 }: GenderedDropdownsProps) {
-  const [loading, setLoading] = React.useState(true);
-  const chartsColor = useColorModeValue("brand.500", "white");
+  const [loading, setLoading] = React.useState(true); // Състояние за зареждане на компонента
+  const chartsColor = useColorModeValue("brand.500", "white"); // Определя цвета на графиките според темата
 
   // useEffect за зареждане на компонента докато не са подадени нужните данни.
   React.useEffect(() => {
@@ -47,7 +63,7 @@ export default function NutrientsDropdown({
       lineChartForCalories &&
       loading
     ) {
-      setLoading(false);
+      setLoading(false); // Промяна на състоянието на зареждане при наличност на данни
     }
   }, [
     lineChartLabels,
@@ -58,7 +74,7 @@ export default function NutrientsDropdown({
     loading
   ]);
 
-  const [isSmallScreen] = useMediaQuery("(max-width: 767px)");
+  const [isSmallScreen] = useMediaQuery("(max-width: 767px)"); // Проверява дали екрана е малък
 
   return (
     <>

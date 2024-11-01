@@ -19,18 +19,34 @@ import {
 import { useState, useEffect } from "react";
 import { saveGoal } from "database/setFunctions";
 import { getAuth } from "firebase/auth";
-export default function CalorieRequirements(props: {
+
+interface CalorieRequirementsProps {
+  /** Изисквания за дневни калории */
   calorieRequirements: DailyCaloryRequirements[];
+  /** Избраното ниво на активност */
   selectedActivityLevel: number;
+  /** Кликната стойност на калориите (по избор) */
   clickedValueCalories?: number | null;
+  /** Функция за задаване на кликнатата стойност на калориите */
   setClickedValueCalories?: React.Dispatch<React.SetStateAction<number | null>>;
+  /** Функция за задаване на избраната цел */
   setSelectedGoal?: React.Dispatch<React.SetStateAction<string>>;
+  /** Функция за задаване на данните за потребителя */
   setUserData?: React.Dispatch<React.SetStateAction<UserData>>;
-}) {
-  const bgHover = useColorModeValue("secondaryGray.200", "whiteAlpha.50");
-  const gradientLight = "linear-gradient(90deg, #422afb 0%, #715ffa 50%)";
-  const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)";
-  const gradient = useColorModeValue(gradientLight, gradientDark);
+}
+
+/**
+ * Компонент за показване на изискванията за калории в зависимост от нивото на активност.
+ *
+ * @param {CalorieRequirementsProps} props - Свойствата на компонента.
+ * @returns {JSX.Element} - Връща компонент с информация за дневните калории.
+ */
+export default function CalorieRequirements(props: CalorieRequirementsProps) {
+  const bgHover = useColorModeValue("secondaryGray.200", "whiteAlpha.50"); // Цвят на фона при задържане
+  const gradientLight = "linear-gradient(90deg, #422afb 0%, #715ffa 50%)"; // Светла градиентна стойност
+  const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)"; // Тъмна градиентна стойност
+  const gradient = useColorModeValue(gradientLight, gradientDark); // Избор на градиент в зависимост от режима на цветовете
+
   const {
     clickedValueCalories,
     setClickedValueCalories,
@@ -38,16 +54,19 @@ export default function CalorieRequirements(props: {
     setUserData
   } = props;
 
+  // Състояние за дневните калорийни изисквания
   const [dailyCaloryRequirements, setDailyCaloryRequirement] = useState<
     DailyCaloryRequirements[]
   >(props.calorieRequirements);
 
+  // useEffect за обновяване на дневните калорийни изисквания, когато променят свойствата
   useEffect(() => {
     setDailyCaloryRequirement(props.calorieRequirements);
   }, [props.calorieRequirements, props.selectedActivityLevel]);
-  const uid = getAuth().currentUser.uid;
+
+  const uid = getAuth().currentUser.uid; // Получаване на идентификатора на текущия потребител
   const selectedLevelData =
-    dailyCaloryRequirements[props.selectedActivityLevel - 1];
+    dailyCaloryRequirements[props.selectedActivityLevel - 1]; // Избиране на данните за текущото ниво на активност
 
   return (
     <FadeInWrapper>

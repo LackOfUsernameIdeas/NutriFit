@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-// Chakra imports
 import {
   Box,
   SimpleGrid,
@@ -9,7 +7,6 @@ import {
   useColorModeValue,
   useBreakpointValue
 } from "@chakra-ui/react";
-
 import MealLoading from "./LoaderMealPlan";
 import FadeInWrapper from "components/wrapper/FadeInWrapper";
 import { HSeparator } from "components/separator/Separator";
@@ -23,18 +20,27 @@ import MealPlanDetails from "./MealPlanDetails";
 import Card from "components/card/Card";
 import { getAuth } from "firebase/auth";
 import { fetchFavouriteMealsForUser } from "database/getFunctions";
+import LinearGradientText from "views/admin/home/components/LinearGradientText";
 
-export default function MealPlannerForm(props: {
-  chosenCalories: number | null;
+interface MealPlannerFormProps {
+  chosenCalories: number | null; // Избрани калории
   chosenNutrients: {
-    name: string;
-    protein: number;
-    fat: number;
-    carbs: number;
+    name: string; // Име на хранителен елемент
+    protein: number; // Протеини
+    fat: number; // Мазнини
+    carbs: number; // Въглехидрати
   };
-  userIntakes: UserIntakes;
-  setUserIntakes?: React.Dispatch<React.SetStateAction<UserIntakes>>;
-}) {
+  userIntakes: UserIntakes; // Прием на потребителя
+  setUserIntakes?: React.Dispatch<React.SetStateAction<UserIntakes>>; // Функция за обновяване на потребителските приеми
+}
+
+/**
+ * Основен компонент за планиране на хранения.
+ *
+ * @param {MealPlannerFormProps} props - Пропс с данни за планирането на хранения.
+ * @returns {JSX.Element} - Връща компонент за планиране на хранения.
+ */
+export default function MealPlannerForm(props: MealPlannerFormProps) {
   const { chosenCalories, chosenNutrients, userIntakes, setUserIntakes } =
     props;
 
@@ -43,93 +49,110 @@ export default function MealPlannerForm(props: {
   const gradientNutri = useColorModeValue(gradientLight, gradientDark);
   const gradientFit = useColorModeValue(gradientDark, gradientLight);
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Състояние за проверка дали формата е подадена
   const [isPlanGeneratedWithOpenAI, setIsPlanGeneratedWithOpenAI] =
-    useState(false);
+    useState(false); // Състояние за проверка дали планът е генериран с OpenAI
   const [isPlanGeneratedWithGemini, setIsPlanGeneratedWithGemini] =
-    useState(false);
+    useState(false); // Състояние за проверка дали планът е генериран с Gemini
   const aiUsed = isPlanGeneratedWithOpenAI
     ? "mealPlanOpenAI"
-    : "mealPlanGemini";
-  const [isLoading, setIsLoading] = useState(false);
-  const [requestFailed, setRequestFailed] = useState(false);
+    : "mealPlanGemini"; // Определя коя AI е използвана за генериране на плана
+  const [isLoading, setIsLoading] = useState(false); // Състояние за индикация на зареждане
+  const [requestFailed, setRequestFailed] = useState(false); // Състояние за индикация на неуспешна заявка
 
   const [userPreferences, setUserPreferences] =
     useState<UserPreferencesForMealPlan>({
-      Calories: 0,
-      Protein: 0,
-      Fat: 0,
-      Carbohydrates: 0,
-      Cuisine: [],
-      Exclude: ""
+      Calories: 0, // Калории
+      Protein: 0, // Протеини
+      Fat: 0, // Мазнини
+      Carbohydrates: 0, // Въглехидрати
+      Cuisine: [], // Кухни
+      Exclude: "" // Храни за изключване
     });
 
   const [mealPlan, setMealPlan] = useState<MealPlan2>({
-    breakfast: null,
-    lunch: null,
-    dinner: null
+    breakfast: null, // Планирана закуска
+    lunch: null, // Планиран обяд
+    dinner: null // Планирана вечеря
   });
+
   const [mealPlanImages, setMealPlanImages] = useState<{
     breakfast: {
-      main: string;
+      main: string; // Основно изображение за закуска
     };
     lunch: {
-      appetizer: string;
-      main: string;
-      dessert: string;
+      appetizer: string; // Изображение за предястие
+      main: string; // Основно изображение за обяд
+      dessert: string; // Изображение за десерт
     };
     dinner: {
-      main: string;
-      dessert: string;
+      main: string; // Основно изображение за вечеря
+      dessert: string; // Изображение за десерт
     };
   }>({
     breakfast: null,
     lunch: null,
     dinner: null
   });
-  const [useFavoritesForPlan, setUseFavoritesForPlan] = useState(false);
-  const [favoriteMealsList, setFavoriteMealsList] = useState("");
 
+  const [useFavoritesForPlan, setUseFavoritesForPlan] = useState(false); // Използване на любими ястия за плана
+  const [favoriteMealsList, setFavoriteMealsList] = useState(""); // Списък с любими ястия
+
+  /**
+   * Обработва промяната в чекбокса за любими ястия.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - Събитие от промените в чекбокса.
+   */
   const handleFavoritesCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setUseFavoritesForPlan(event.target.checked);
   };
 
+  /**
+   * Обработва промените в входните полета.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - Събитие от промените в входното поле.
+   */
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     if (name !== "Cuisine" && name !== "Exclude") {
       setUserPreferences((prevPreferences) => ({
         ...prevPreferences,
-        [name]: parseFloat(value)
+        [name]: parseFloat(value) // Парсира стойността в число
       }));
     } else {
       setUserPreferences((prevPreferences) => ({
         ...prevPreferences,
-        [name]: value
+        [name]: value // Задава стойността на текстовото поле
       }));
     }
   };
 
+  /**
+   * Обработва промяната в чекбокса за кухни.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - Събитие от промените в чекбокса.
+   */
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
     setUserPreferences((prevState) => {
       let updatedCuisines: string | string[];
       if (typeof prevState.Cuisine === "string") {
-        // If Cuisine is currently a string, convert it to an array
+        // Ако Cuisine е в момента низ, го конвертира в масив
         updatedCuisines = prevState.Cuisine ? [prevState.Cuisine] : [];
       } else {
-        // If Cuisine is already an array, use it as is
+        // Ако Cuisine вече е масив, го използва без промяна
         updatedCuisines = [...prevState.Cuisine];
       }
       if (checked) {
-        // Add cuisine to array if checked
+        // Добавя кухнята в масива, ако е отметната
         updatedCuisines.push(name);
       } else {
-        // Remove cuisine from array if unchecked
+        // Премахва кухнята от масива, ако не е отметната
         updatedCuisines = updatedCuisines.filter((c) => c !== name);
       }
-      // If there's only one cuisine selected, convert it back to a string
+      // Ако има само една избрана кухня, я конвертира обратно в низ
       const updatedCuisineState =
         updatedCuisines.length === 1 ? updatedCuisines[0] : updatedCuisines;
       return {
@@ -139,6 +162,7 @@ export default function MealPlannerForm(props: {
     });
   };
 
+  // Следи промените в избраните калории и макронутриенти
   useEffect(() => {
     setUserPreferences({
       Calories: chosenCalories,
@@ -150,14 +174,14 @@ export default function MealPlannerForm(props: {
     });
   }, [chosenCalories, chosenNutrients]);
 
+  // Изтегля любими ястия на потребителя
   useEffect(() => {
     const loadFavouriteMeals = async () => {
       try {
         const userId = getAuth().currentUser?.uid;
         if (userId) {
           const favoriteMeals = await fetchFavouriteMealsForUser(userId);
-
-          const formattedMealsList = favoriteMeals.join(", ");
+          const formattedMealsList = favoriteMeals.join(", "); // Форматира списъка на любимите ястия
           setFavoriteMealsList(formattedMealsList);
           console.log(formattedMealsList);
         }
@@ -168,7 +192,6 @@ export default function MealPlannerForm(props: {
 
     loadFavouriteMeals();
   }, []);
-  console.log(userPreferences);
 
   const cuisineTranslation: { [key: string]: string } = {
     Italian: "Италианска",
@@ -177,6 +200,12 @@ export default function MealPlannerForm(props: {
     French: "Френска"
   };
 
+  /**
+   * Превежда името на кухня от английски на български.
+   *
+   * @param {string | string[]} englishCuisine - Име на кухня на английски.
+   * @returns {string | string[]} - Преведено име на кухня или оригиналното име.
+   */
   function translateCuisine(
     englishCuisine: string | string[]
   ): string | string[] {
@@ -185,7 +214,7 @@ export default function MealPlannerForm(props: {
         (cuisine) => cuisineTranslation[cuisine] || cuisine
       );
     } else {
-      return cuisineTranslation[englishCuisine] || englishCuisine; // Return Bulgarian translation if available, otherwise return original cuisine name
+      return cuisineTranslation[englishCuisine] || englishCuisine; // Връща българския превод, ако е наличен
     }
   }
 
@@ -195,23 +224,23 @@ export default function MealPlannerForm(props: {
   let promptCuisine: string;
 
   if (Array.isArray(translatedCuisine)) {
-    promptCuisine = translatedCuisine.join(", "); // Join multiple translated cuisine names with commas
+    promptCuisine = translatedCuisine.join(", "); // Обединява имена на кухни с запетая
   } else {
-    promptCuisine = translatedCuisine as string; // Use the translated cuisine name
+    promptCuisine = translatedCuisine as string; // Използва преведеното име на кухня
   }
 
   let cuisinePhrase: string;
 
   if (Array.isArray(userPreferences.Cuisine)) {
     if (userPreferences.Cuisine.length === 0) {
-      cuisinePhrase = "всяка";
+      cuisinePhrase = "всяка"; // Няма избрани кухни
     } else if (userPreferences.Cuisine.length === 1) {
-      cuisinePhrase = userPreferences.Cuisine[0];
+      cuisinePhrase = userPreferences.Cuisine[0]; // Една избрана кухня
     } else {
-      cuisinePhrase = "следните";
+      cuisinePhrase = "следните"; // Няколко избрани кухни
     }
   } else {
-    cuisinePhrase = userPreferences.Cuisine;
+    cuisinePhrase = userPreferences.Cuisine; // Връща кухненското име
   }
 
   console.log("TRANSLATED --->", promptCuisine);
@@ -334,6 +363,13 @@ export default function MealPlannerForm(props: {
 
   // Hosting: REACT_APP_API_KEY_HOSTING
   const openAIKey = process.env.REACT_APP_API_KEY_HOSTING;
+
+  /**
+   * Генерира хранителен план с OpenAI.
+   * @async
+   * @function generatePlanWithOpenAI
+   * @returns {Promise<void>} - Няма да връща стойност.
+   */
   const generatePlanWithOpenAI = async () => {
     try {
       setIsSubmitted(true);
@@ -341,7 +377,6 @@ export default function MealPlannerForm(props: {
       setIsPlanGeneratedWithOpenAI(true);
       setIsPlanGeneratedWithGemini(false);
       setIsLoading(true);
-      console.log("PROMPT --->", promptOpenAI);
 
       const response = await fetch(
         "https://api.openai.com/v1/chat/completions",
@@ -372,12 +407,11 @@ export default function MealPlannerForm(props: {
       const responseData = await response.json();
       console.log("responseData: ", responseData);
       const responseJson = responseData.choices[0].message.content;
-      // Process the data returned by OpenAI API
       const unescapedData = responseJson
         .replace(/^```json([\s\S]*?)```$/, "$1")
         .replace(/^```JSON([\s\S]*?)```$/, "$1")
         .replace(/^```([\s\S]*?)```$/, "$1")
-        .replace(/^'|'$/g, "") // Remove single quotes at the beginning and end
+        .replace(/^'|'$/g, "")
         .trim();
       console.log("unescapedData: ", unescapedData);
       const escapedData = decodeURIComponent(unescapedData);
@@ -427,21 +461,16 @@ export default function MealPlannerForm(props: {
           dessert: ""
         }
       };
-      const updatedMealPlanImagesData: any = {}; // Initialize a variable to hold updated meal plan images data
+      const updatedMealPlanImagesData: any = {};
       const updatedMealPlan: any = {};
-      // Iterate over each meal and make a separate image generation request
       for (const mealKey of Object.keys(filteredArr)) {
         const mealAppetizer = (filteredArr as any)[mealKey].appetizer;
         const mealMain = (filteredArr as any)[mealKey].main;
         const mealDessert = (filteredArr as any)[mealKey].dessert;
 
-        // console.log("meal: ", meal);
-        // console.log("meal name: ", meal.name);
-
         //NutriFit: cx=10030740e88c842af, key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw
         //NutriFit2: cx=258e213112b4b4492, key=AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA
         //NutriFit3: cx=527000b0fabcc4dab, key=AIzaSyDwqaIBGxmhEc6GVR3lwOVk_-0EpwKvOPA
-        // Now make a request to the google images search engine endpoint for each meal's name
         async function fetchImage(name: string): Promise<any> {
           try {
             let response = await fetch(
@@ -482,10 +511,6 @@ export default function MealPlannerForm(props: {
           imageDessert !== null ? await imageDessert.json() : null;
 
         console.log("imageDessert: ", imageDessert, mealKey);
-        // console.log(
-        //   `Image Generation Response for ${mealAppetizer.name}: `,
-        //   imageAppetizerResponseData.items[0].link
-        // );
         if (
           imageAppetizerResponseData !== null &&
           imageAppetizerResponseData?.items?.[0]?.link
@@ -512,7 +537,6 @@ export default function MealPlannerForm(props: {
           dessert: imageDessertResponseData?.items?.[0]?.link || ""
         };
 
-        // Set updated meal plan
         updatedMealPlan[mealKey] = {
           appetizer: data[mealKey].appetizer,
           main: data[mealKey].main,
@@ -535,38 +559,56 @@ export default function MealPlannerForm(props: {
     }
   };
 
+  /**
+   * Проверява дали даден обект (или масив от обекти) съдържа валидни стойности за "totals".
+   * @function checkTotals
+   * @param {any} obj - Обектът или масивът, който да се провери.
+   * @throws {Error} - Генерира грешка, ако стойностите в "totals" не са числа.
+   */
   function checkTotals(obj: any) {
-    // Check if the object is an array
+    // Проверява дали обектът е масив
     if (Array.isArray(obj)) {
-      obj.forEach((item) => checkTotals(item));
+      obj.forEach((item) => checkTotals(item)); // Рекурсивно проверява всеки елемент в масива
     } else if (typeof obj === "object" && obj !== null) {
-      // Check if the object is an object (excluding null)
-      // Check if the object has a "totals" property
+      // Проверява дали обектът е действителен обект (изключва null)
+      // Проверява дали обектът има свойство "totals"
       if (obj.hasOwnProperty("totals")) {
         for (let key in obj.totals) {
           if (typeof obj.totals[key] !== "number") {
             throw new Error(
-              `Invalid value for ${key} in totals: Expected a number`
+              `Invalid value for ${key} in totals: Expected a number` // Генерира грешка, ако стойността не е число
             );
           }
         }
       }
-      // Recursively check the nested objects
+      // Рекурсивно проверява вложените обекти
       for (let key in obj) {
         checkTotals(obj[key]);
       }
     }
   }
 
+  /**
+   * Проверява дали JSON обектът е валиден, т.е. дали съдържа всички нужни ястия.
+   * @function isValidJson
+   * @param {MealPlan2} jsonObject - JSON обектът, който да се провери.
+   * @returns {boolean} - Връща true, ако JSON обектът е валиден, иначе false.
+   */
   const isValidJson = (jsonObject: MealPlan2) => {
     return (
       jsonObject &&
-      jsonObject.breakfast &&
-      jsonObject.lunch &&
-      jsonObject.dinner
+      jsonObject.breakfast && // Проверява наличието на закуска
+      jsonObject.lunch && // Проверява наличието на обяд
+      jsonObject.dinner // Проверява наличието на вечеря
     );
   };
 
+  /**
+   * Генерира хранителен план с Gemini.
+   * @async
+   * @function generatePlanWithGemini
+   * @returns {Promise<void>} - Няма да връща стойност.
+   */
   const generatePlanWithGemini = async () => {
     try {
       setIsSubmitted(true);
@@ -591,7 +633,6 @@ export default function MealPlannerForm(props: {
 
       const responseData = await response.json();
       const responseJson = responseData.aiResponse;
-      console.log("Response from backend:", responseJson);
 
       const stringToRepair = responseJson
         .replace(/^```json([\s\S]*?)```$/, "$1")
@@ -601,10 +642,8 @@ export default function MealPlannerForm(props: {
         .trim();
       let jsonObject;
       try {
-        console.log("stringToRepair: ", stringToRepair);
         jsonObject = JSON.parse(stringToRepair);
         checkTotals(jsonObject);
-        console.log("jsonObject11111: ", jsonObject);
       } catch (parseError) {
         throw new Error("Invalid JSON response from the server");
       }
@@ -648,13 +687,9 @@ export default function MealPlannerForm(props: {
           const mealMain = (jsonObject as any)[mealKey].main;
           const mealDessert = (jsonObject as any)[mealKey].dessert;
 
-          // console.log("meal: ", meal);
-          // console.log("meal name: ", meal.name);
-
           //NutriFit: cx=10030740e88c842af, key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw
           //NutriFit2: cx=258e213112b4b4492, key=AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA
           //NutriFit3: cx=527000b0fabcc4dab, key=AIzaSyDwqaIBGxmhEc6GVR3lwOVk_-0EpwKvOPA
-          // Now make a request to the google images search engine endpoint for each meal's name
           async function fetchImage(name: string): Promise<any> {
             try {
               let response = await fetch(
@@ -689,7 +724,6 @@ export default function MealPlannerForm(props: {
           const imageMainResponseData = await imageMain.json();
           const imageDessertResponseData =
             imageDessert !== null ? await imageDessert.json() : null;
-          // Check if the response data is not null and has items array
           if (
             imageAppetizerResponseData !== null &&
             Array.isArray(imageAppetizerResponseData.items) &&
@@ -710,10 +744,9 @@ export default function MealPlannerForm(props: {
           }
           updatedMealPlanImagesData[mealKey] = {
             appetizer: imageAppetizerResponseData?.items?.[0]?.link || "",
-            main: imageMainResponseData?.items?.[0]?.link || "", // Add a null check before accessing items
+            main: imageMainResponseData?.items?.[0]?.link || "",
             dessert: imageDessertResponseData?.items?.[0]?.link || ""
           };
-          // Set updated meal plan
           updatedMealPlan[mealKey] = {
             appetizer: jsonObject[mealKey].appetizer,
             main: jsonObject[mealKey].main,
@@ -737,41 +770,6 @@ export default function MealPlannerForm(props: {
 
   console.log("mealPlan: ", mealPlan);
   console.log("mealPlanImages: ", mealPlanImages);
-  // const filteredArr = Object.keys(mealPlan).map((mealType: any, index) => {
-  //   console.log((mealPlan as any)[mealType]?.name, index);
-  // });
-  // console.log("filteredArr: ", filteredArr);
-
-  interface LinearGradientTextProps {
-    text: any;
-    gradient: string;
-    fontSize?: string;
-    fontFamily?: string;
-    mr?: string;
-  }
-
-  const LinearGradientText: React.FC<LinearGradientTextProps> = ({
-    text,
-    gradient,
-    fontSize,
-    fontFamily,
-    mr
-  }) => (
-    <Text
-      as="span"
-      fontSize={fontSize}
-      fontFamily={fontFamily}
-      fontWeight="bold"
-      mr={mr}
-      style={{
-        backgroundImage: gradient,
-        WebkitBackgroundClip: "text",
-        color: "transparent"
-      }}
-    >
-      {text}
-    </Text>
-  );
 
   const fontSize = useBreakpointValue({ base: "3xl", md: "5xl" });
 

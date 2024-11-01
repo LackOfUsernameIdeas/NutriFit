@@ -33,18 +33,21 @@ import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import { getAuth } from "firebase/auth";
 import { saveFavouriteMeal } from "database/setFunctions";
 
+// Интерфейс за свойствата на компонента UserPreferencesForMealPlanForm
 interface UserPreferencesInputProps {
-  userPreferences: UserPreferencesForMealPlan;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  generatePlanWithOpenAI: () => void;
-  generatePlanWithGemini: () => void;
-  favouriteMeals: string;
-  useFavoritesForPlan: boolean;
+  userPreferences: UserPreferencesForMealPlan; // Предпочитания на потребителя за хранителен план
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void; // Функция за обработка на промяна на вход
+  handleCheckboxChange: (event: React.ChangeEvent<HTMLInputElement>) => void; // Функция за обработка на промяна на чекбокс
+  generatePlanWithOpenAI: () => void; // Функция за генериране на план с OpenAI
+  generatePlanWithGemini: () => void; // Функция за генериране на план с Gemini
+  favouriteMeals: string; // Списък с любими ястия
+  useFavoritesForPlan: boolean; // Опция за използване на любими ястия в плана
   handleFavoritesCheckboxChange: (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => void;
+  ) => void; // Функция за обработка на промяна на чекбокс за любими ястия
 }
+
+// Масив с имена на полета на български
 const fieldName: string[] = [
   "калории",
   "протеин",
@@ -54,6 +57,11 @@ const fieldName: string[] = [
   "какво да не се включва"
 ];
 
+/**
+ * Компонент за формуляр на предпочитания на потребителя за хранителен план.
+ * @param {UserPreferencesInputProps} props - Свойствата на компонента.
+ * @returns {JSX.Element} - Връща JSX елемент с формуляр за предпочитания.
+ */
 const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
   userPreferences,
   handleInputChange,
@@ -64,6 +72,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
   useFavoritesForPlan,
   handleFavoritesCheckboxChange
 }) => {
+  // Определяне на цветове в зависимост от темата
   const textColor = useColorModeValue("#1a202c", "white");
   const bgButton = useColorModeValue("secondaryGray.200", "whiteAlpha.100");
   const brandColor = useColorModeValue("brand.500", "white");
@@ -72,6 +81,8 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
   const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)";
   const gradient = useColorModeValue(gradientLight, gradientDark);
   const dropdownActiveBoxBg = useColorModeValue("#d8dced", "#171F3D");
+
+  // Състояния за валидиране и управление на любими ястия
   const [validationErrors, setValidationErrors] = React.useState<{
     [key: string]: string;
   }>({});
@@ -81,29 +92,35 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     [meal: string]: boolean;
   }>({});
 
+  // Функция за превключване на видимостта на списъка с любими ястия
   const toggleFavouriteMealsList = () => {
     setShowFavouriteMeals(!showFavouriteMeals);
   };
 
+  // Функция за превключване на статуса на любимото ястие
   const toggleMealFavorite = async (meal: string) => {
     try {
-      const userId = getAuth().currentUser?.uid;
+      const userId = getAuth().currentUser?.uid; // Получаване на ID на текущия потребител
       if (!userId) return;
 
+      // Запазване или изтриване на любимо ястие
       if (favouriteMealStatus[meal]) {
         await deleteFavouriteMeal(userId, meal);
       } else {
         await saveFavouriteMeal(userId, meal);
       }
 
+      // Обновяване на статуса на любимото ястие
       setFavouriteMealStatus((prevStatus) => ({
         ...prevStatus,
         [meal]: !prevStatus[meal]
       }));
     } catch (error) {
-      console.error("Error toggling favorite status:", error);
+      console.error("Error toggling favorite status:", error); // Логване на грешки
     }
   };
+
+  // Анимация за позициониране на падащото меню
   const DropdownPosition = useSpring({
     opacity: 1,
     transform: `translateY(${-50}px)`,
@@ -113,6 +130,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     }
   });
 
+  // Функция за валидиране на данни за хранителни вещества
   const isNutrientDataValid = () => {
     const errors: { [key: string]: string } = {};
 
@@ -124,10 +142,11 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
       if (value <= 0) {
         errors[
           fieldName
-        ] = `Моля, въведете валидна стойност за ${fieldNameBG}.`;
+        ] = `Моля, въведете валидна стойност за ${fieldNameBG}.`; // Добавяне на грешка при невалидна стойност
       }
     };
 
+    // Проверка на стойностите за калории и хранителни вещества
     validateNutrient(userPreferences.Calories, "Calories", fieldName[0]);
     validateNutrient(
       userPreferences.Carbohydrates,
@@ -137,31 +156,34 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     validateNutrient(userPreferences.Fat, "Fat", fieldName[2]);
     validateNutrient(userPreferences.Protein, "Protein", fieldName[1]);
 
-    setValidationErrors(errors);
+    setValidationErrors(errors); // Обновяване на грешките
 
-    return Object.keys(errors).length === 0;
+    return Object.keys(errors).length === 0; // Връща true, ако няма грешки
   };
 
+  // Функция за обработка на подаден формуляр с OpenAI
   const handleSubmitWithOpenAI = (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault(); // Предотвратяване на подразбиране на формуляра
 
     if (isNutrientDataValid()) {
-      generatePlanWithOpenAI();
+      generatePlanWithOpenAI(); // Генериране на план с OpenAI
     }
   };
 
+  // Функция за обработка на подаден формуляр с Gemini
   const handleSubmitWithGemini = (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault(); // Предотвратяване на подразбиране на формуляра
 
     if (isNutrientDataValid()) {
-      generatePlanWithGemini();
+      generatePlanWithGemini(); // Генериране на план с Gemini
     }
   };
 
+  // Масиви с кухни на английски и български
   const englishCuisines = ["Bulgarian", "Spanish", "Italian", "French"];
-
   const bulgarianCuisines = ["Българска", "Испанска", "Италианска", "Френска"];
 
+  // Масив с флагове на страните
   const countriesFlags = [
     "https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Bulgaria.svg",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/1280px-Bandera_de_Espa%C3%B1a.svg.png",
@@ -169,11 +191,12 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/800px-Flag_of_France.svg.png"
   ];
 
+  // useEffect за инициализиране на статуса на любимите ястия
   React.useEffect(() => {
     if (favouriteMeals) {
       const initialStatus = favouriteMeals
         .split(", ")
-        .reduce((acc, meal) => ({ ...acc, [meal]: true }), {});
+        .reduce((acc, meal) => ({ ...acc, [meal]: true }), {}); // Инициализиране на статуса на любимите ястия
       setFavouriteMealStatus(initialStatus);
     }
   }, [favouriteMeals]);

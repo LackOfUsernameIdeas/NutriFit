@@ -183,7 +183,7 @@ export default function MealPlanner() {
 
   function generateStatsForMacroNutrients() {
     setTimeout(() => {
-      setIsDietTableDataReady(true); // Set the state when data is ready
+      setIsDietTableDataReady(true);
     }, 1000);
   }
   // Функции, които калкулират изменението на стойностите на потребителя
@@ -280,6 +280,7 @@ export default function MealPlanner() {
   const [currentUser, setCurrentUser] = useState(null);
 
   React.useEffect(() => {
+    // Слуша промените в състоянието на аутентикация и актуализира текущия потребител.
     const auth = getAuth();
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -293,6 +294,7 @@ export default function MealPlanner() {
   }, []);
 
   React.useEffect(() => {
+    // Извлича данни за потребителя, ако текущият потребител е зададен.
     if (currentUser) {
       const fetchData = async () => {
         try {
@@ -330,7 +332,6 @@ export default function MealPlanner() {
             weight: weightStatsData.userDataSaveable.weight
           });
           console.log("weight stats", weightStatsData);
-          // Set the states accordingly
           setPerfectWeight(weightStatsData.perfectWeight);
           console.log(
             "DIFFERENCE FROM FETCH!!!! ",
@@ -345,7 +346,6 @@ export default function MealPlanner() {
 
           setHealth(weightStatsData.bmiIndex.health);
 
-          // Set state with extracted data
           setAllOrderedObjects(weightStatsData.userDataForCharts);
           const preferencesObjects =
             weightStatsData.orderedTimestampObjectsWithPreferences.map(
@@ -368,6 +368,7 @@ export default function MealPlanner() {
   }, [currentUser]);
 
   React.useEffect(() => {
+    // Проверява дали всички стойности на потребителските данни са валидни и генерира статистика за калориите.
     const areValuesValid = Object.values(userData).every(
       (value) => value !== 0
     );
@@ -379,6 +380,7 @@ export default function MealPlanner() {
   }, [userData]);
 
   React.useEffect(() => {
+    // Генерира статистика за макронутриентите, ако статистиката за калориите е генерирана и целта на потребителя е зададена.
     if (isGenerateStatsForCaloriesCalled && userData.goal) {
       generateStatsForMacroNutrients();
       setIsGenerateStatsForMacroNutrientsCalled(true);
@@ -423,7 +425,6 @@ export default function MealPlanner() {
     });
   }
 
-  console.log("tableData: ", tableData);
   React.useEffect(() => {
     if (
       clickedValueCalories !== null &&

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Icon,
-  SimpleGrid,
-  useColorModeValue,
-  useMediaQuery,
-  Center
-} from "@chakra-ui/react";
+import { Icon, SimpleGrid, useColorModeValue, Center } from "@chakra-ui/react";
 import { GiWeightLiftingUp, GiWeightScale } from "react-icons/gi";
 import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
@@ -13,18 +7,32 @@ import Loading from "views/admin/weightStats/components/Loading";
 import DropdownAlternate from "components/dropdowns/DropdownAlternate";
 import { WeightDifference } from "variables/weightStats";
 
-interface GenderedDropdownsProps {
+interface DropdownsProps {
+  /** Дата на последно запазване на данните за потребителя */
   userDataLastSavedDate: string;
+  /** Разлика от перфектното тегло */
   differenceFromPerfectWeight: WeightDifference;
+  /** Промяна на разликата от перфектното тегло */
   differenceFromPerfectWeightChange: number;
+  /** Състояние на здравето */
   health: string;
+  /** Перфектно тегло */
   perfectWeight: number;
+  /** Видимост на дропдауна */
   dropdownVisible: boolean;
+  /** Функция за управление на видимостта на дропдауна */
   handleDropdownToggle: () => void;
+  /** Функция за изчисляване на препоръчителната цел */
   calculateRecommendedGoal: () => string;
 }
 
-const AlertDropdown: React.FC<GenderedDropdownsProps> = ({
+/**
+ * Компонент за показване на дропдаун с информация за теглото.
+ *
+ * @param {DropdownsProps} props - Свойствата на компонента.
+ * @returns {JSX.Element} - Връща дропдаун с данни за теглото.
+ */
+const AlertDropdown: React.FC<DropdownsProps> = ({
   userDataLastSavedDate,
   differenceFromPerfectWeight,
   differenceFromPerfectWeightChange,

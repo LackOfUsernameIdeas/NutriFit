@@ -32,34 +32,34 @@ import {
   MdFlatware
 } from "react-icons/md";
 import { saveDeviations, saveMealPlan } from "database/setFunctions";
-
 import { getAuth } from "firebase/auth";
+
 interface MealPlanDetailsProps {
-  mealPlan: MealPlan2;
+  mealPlan: MealPlan2; // Хранителен план с информация за храненията
   mealPlanImages: {
-    breakfast: {
-      main: string;
-    };
-    lunch: {
-      appetizer: string;
-      main: string;
-      dessert: string;
-    };
-    dinner: {
-      main: string;
-      dessert: string;
-    };
+    breakfast: { main: string }; // Основно изображение за закуска
+    lunch: { appetizer: string; main: string; dessert: string }; // Изображения за обяд
+    dinner: { main: string; dessert: string }; // Изображения за вечеря
   };
-  userPreferences: UserPreferencesForMealPlan;
-  isForLoading?: boolean;
-  isPlanGeneratedWithOpenAI: boolean;
+  userPreferences: UserPreferencesForMealPlan; // Потребителски предпочитания за хранителния план
+  isForLoading?: boolean; // Опционален параметър за индикация на зареждане
+  isPlanGeneratedWithOpenAI: boolean; // Индикация дали планът е генериран с OpenAI
 }
 
+/**
+ * Списък с типове хранения на български.
+ */
 const bulgarianMealType: string[] = ["Закуска", "Обяд", "Вечеря"];
 
+/**
+ * Изчислява общите стойности на хранителния план.
+ *
+ * @param {MealPlan2} mealPlan - Хранителен план, от който да се извлекат стойности.
+ * @returns {{ calories: number; protein: number; fat: number; carbohydrates: number }} - Общи стойности на калории, протеини, мазнини и въглехидрати.
+ * @throws {Error} - Изхвърля грешка при проблеми с изчисленията.
+ */
 const calculateMealTotals = (mealPlan: MealPlan2) => {
   try {
-    // Initialize totals for the meal type
     const totals = {
       calories: 0,
       protein: 0,
@@ -67,15 +67,11 @@ const calculateMealTotals = (mealPlan: MealPlan2) => {
       carbohydrates: 0
     };
 
-    // Iterate over each meal type
     Object.entries(mealPlan).forEach(([mealType, meal]) => {
       if (mealType !== "totals") {
-        // Iterate over each food item in the meal type
         Object.values(meal).forEach((foodItem: any) => {
           console.log("foodItem", foodItem);
-          // Check if foodItem has totals property
           if (foodItem && foodItem.totals) {
-            // Add the nutrients of the food item to the totals for the day
             totals.calories += foodItem.totals.calories || 0;
             totals.protein += foodItem.totals.protein || 0;
             totals.fat += foodItem.totals.fat || 0;
@@ -92,6 +88,12 @@ const calculateMealTotals = (mealPlan: MealPlan2) => {
   }
 };
 
+/**
+ * Компонент, показващ детайли за хранителния план.
+ *
+ * @param {MealPlanDetailsProps} props - Пропс с данни за хранителния план.
+ * @returns {JSX.Element} - Връща компонент с детайли за хранителния план.
+ */
 const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
   mealPlan,
   mealPlanImages,
@@ -99,34 +101,34 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
   isForLoading,
   isPlanGeneratedWithOpenAI
 }) => {
-  const [calculatedTotals, setCalculatedTotals] = React.useState(null);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const [currentPage, setCurrentPage] = React.useState("закуска");
+  const [calculatedTotals, setCalculatedTotals] = React.useState(null); // Общи изчислени стойности
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null); // Съобщение за грешка
+  const [currentPage, setCurrentPage] = React.useState("закуска"); // Текуща страница (тип хранене)
   const [showDessertInstructions, setShowDessertInstructions] =
-    React.useState(false);
-  const [showMainInstructions, setShowMainInstructions] = React.useState(false);
+    React.useState(false); // Показване на инструкции за десерти
+  const [showMainInstructions, setShowMainInstructions] = React.useState(false); // Показване на инструкции за основни ястия
   const [showAppetizerInstructions, setShowAppetizerInstructions] =
-    React.useState(false);
-  const toggleDessertInstructions = () => {
+    React.useState(false); // Показване на инструкции за предястия
+
+  // Функции за показване/скриване на инструкции
+  const toggleDessertInstructions = () =>
     setShowDessertInstructions(!showDessertInstructions);
-  };
-  const toggleMainInstructions = () => {
+  const toggleMainInstructions = () =>
     setShowMainInstructions(!showMainInstructions);
-  };
-  const toggleAppetizerInstructions = () => {
+  const toggleAppetizerInstructions = () =>
     setShowAppetizerInstructions(!showAppetizerInstructions);
-  };
-  // Function to handle next page
+
+  // Функции за навигация между страниците
   const nextPage = () => {
     if (currentPage === "закуска") setCurrentPage("обяд");
     else if (currentPage === "обяд") setCurrentPage("вечеря");
   };
 
-  // Function to handle previous page
   const prevPage = () => {
     if (currentPage === "обяд") setCurrentPage("закуска");
     else if (currentPage === "вечеря") setCurrentPage("обяд");
   };
+
   console.log("unfiltered Array: ", mealPlan);
 
   const filteredArr = Object.fromEntries(
@@ -134,10 +136,9 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
   );
 
   console.log("filteredArr: ", filteredArr);
-
   console.log("calculatedTotals: ", calculatedTotals);
 
-  const [isSmallScreen] = useMediaQuery("(max-width: 767px)");
+  const [isSmallScreen] = useMediaQuery("(max-width: 767px)"); // Проверка за малък екран
   const deviations: SaveableDeviations = calculatedTotals
     ? {
         calories: {
@@ -193,7 +194,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
 
     const saveMealPlanData = async () => {
       try {
-        // Check if mealPlan and mealPlanImages are not null and contain necessary data
+        // Проверка за валидност на mealPlan и mealPlanImages
         if (
           mealPlan &&
           mealPlan.breakfast &&
@@ -214,10 +215,9 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
 
     const saveDeviationsData = async () => {
       try {
-        // Function to check if any value in the deviations state is empty string or zero
         const isNotEmpty = (value: number | string) => value !== "";
 
-        // Check if initialDeviations is not null and has non-empty values
+        // Проверка за валидност на deviations
         if (
           deviations !== null &&
           Object.values(deviations).some(
@@ -239,18 +239,16 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
   React.useEffect(() => {
     const calculateTotalsData = async () => {
       try {
-        // Check if mealPlan is not null before accessing its properties
+        // Проверка за валидност на mealPlan
         if (mealPlan && mealPlan.breakfast !== null) {
           const calculated = calculateMealTotals(mealPlan);
-          // Reset the error message state
-          setErrorMessage("");
+          setErrorMessage(""); // Нулиране на съобщението за грешка
           setCalculatedTotals(calculated);
         }
       } catch (error) {
         console.error("Error calculating meal totals:", error);
-        // Set the error message state
         setErrorMessage(
-          "Не намерихме подходящ за вас хранителен план :( Опитайте отново. "
+          "Не намерихме подходящ за вас хранителен план :( Опитайте отново."
         );
       }
     };
@@ -258,6 +256,12 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
     calculateTotalsData();
   }, [mealPlan]);
 
+  /**
+   * Проверява името на храненето и го заменя с български еквивалент.
+   *
+   * @param {string} mealName - Името на храненето.
+   * @returns {string} - Българското име на храненето или оригиналното име.
+   */
   const checkName = (mealName: string) => {
     switch (mealName) {
       case "Crema Catalana":
@@ -266,6 +270,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
       case "Италиански тирамису":
         return "Италианско тирамису";
       case "Ягодов сорбет":
+      case "Ягодов сорбе":
         return "Ягодово сорбе";
       default:
         return mealName;
@@ -357,8 +362,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={appetizerName
-                              }
+                              author={appetizerName}
                               image={
                                 (mealPlanImages as any)[mealType].appetizer
                                   ? (mealPlanImages as any)[mealType].appetizer
@@ -556,9 +560,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                 </Tooltip>
                               </Flex>
                             }
-                            author={
-                          mainName
-                            }
+                            author={mainName}
                             image={
                               (mealPlanImages as any)[mealType].main
                                 ? (mealPlanImages as any)[mealType].main
@@ -764,8 +766,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={dessertName
-                              }
+                              author={dessertName}
                               image={
                                 (mealPlanImages as any)[mealType].dessert
                                   ? (mealPlanImages as any)[mealType].dessert
@@ -1028,8 +1029,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={appetizerName
-                              }
+                              author={appetizerName}
                               image={
                                 (mealPlanImages as any)[mealType].appetizer
                                   ? (mealPlanImages as any)[mealType].appetizer
@@ -1227,8 +1227,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                 </Tooltip>
                               </Flex>
                             }
-                            author={mainName
-                            }
+                            author={mainName}
                             image={
                               (mealPlanImages as any)[mealType].main
                                 ? (mealPlanImages as any)[mealType].main
@@ -1434,8 +1433,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={dessertName
-                              }
+                              author={dessertName}
                               image={
                                 (mealPlanImages as any)[mealType].dessert
                                   ? (mealPlanImages as any)[mealType].dessert
@@ -1688,8 +1686,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={appetizerName
-                              }
+                              author={appetizerName}
                               image={
                                 (mealPlanImages as any)[mealType].appetizer
                                   ? (mealPlanImages as any)[mealType].appetizer
@@ -1887,8 +1884,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                 </Tooltip>
                               </Flex>
                             }
-                            author={mainName
-                            }
+                            author={mainName}
                             image={
                               (mealPlanImages as any)[mealType].main
                                 ? (mealPlanImages as any)[mealType].main
@@ -2094,8 +2090,7 @@ const MealPlanDetails: React.FC<MealPlanDetailsProps> = ({
                                   </Tooltip>
                                 </Flex>
                               }
-                              author={dessertName
-                              }
+                              author={dessertName}
                               image={
                                 (mealPlanImages as any)[mealType].dessert
                                   ? (mealPlanImages as any)[mealType].dessert
