@@ -18,7 +18,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useMediaQuery
+  useMediaQuery,
+  Icon
 } from "@chakra-ui/react";
 import OpenAIImage from "../../../../assets/img/layout/openai.png";
 import GeminiImage from "../../../../assets/img/layout/geminiStar.png";
@@ -27,6 +28,10 @@ import { UserPreferencesForMealPlan } from "../../../../variables/weightStats";
 import { useSpring, animated } from "react-spring";
 import Card from "components/card/Card";
 import { HSeparator } from "components/separator/Separator";
+import { deleteFavouriteMeal } from "database/deleteFunctions";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { getAuth } from "firebase/auth";
+import { saveFavouriteMeal } from "database/setFunctions";
 
 interface UserPreferencesInputProps {
   userPreferences: UserPreferencesForMealPlan;
@@ -72,11 +77,33 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
   }>({});
   const [showFavouriteMeals, setShowFavouriteMeals] = React.useState(false);
   const [isSmallScreen] = useMediaQuery("(max-width: 767px)");
+  const [favouriteMealStatus, setFavouriteMealStatus] = React.useState<{
+    [meal: string]: boolean;
+  }>({});
 
-  const toggleFavouriteMeals = () => {
+  const toggleFavouriteMealsList = () => {
     setShowFavouriteMeals(!showFavouriteMeals);
   };
 
+  const toggleMealFavorite = async (meal: string) => {
+    try {
+      const userId = getAuth().currentUser?.uid;
+      if (!userId) return;
+
+      if (favouriteMealStatus[meal]) {
+        await deleteFavouriteMeal(userId, meal);
+      } else {
+        await saveFavouriteMeal(userId, meal);
+      }
+
+      setFavouriteMealStatus((prevStatus) => ({
+        ...prevStatus,
+        [meal]: !prevStatus[meal]
+      }));
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+    }
+  };
   const DropdownPosition = useSpring({
     opacity: 1,
     transform: `translateY(${-50}px)`,
@@ -141,6 +168,16 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png",
     "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/800px-Flag_of_France.svg.png"
   ];
+
+  React.useEffect(() => {
+    if (favouriteMeals) {
+      const initialStatus = favouriteMeals
+        .split(", ")
+        .reduce((acc, meal) => ({ ...acc, [meal]: true }), {});
+      setFavouriteMealStatus(initialStatus);
+    }
+  }, [favouriteMeals]);
+
   return (
     <Card>
       <SimpleGrid
@@ -230,14 +267,14 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
             position="relative"
             bg={dropdownActiveBoxBg}
             transition="background-image 0.5s ease-in-out"
-            minH="80px" // Use minHeight instead of height
+            minH="80px"
             maxH={{ sm: "200px", md: "100px", lg: "auto" }}
           >
             <Flex
               alignItems="center"
               mt="3px"
               position="relative"
-              flexWrap="wrap" // Allow items to wrap to the next line
+              flexWrap="wrap"
             >
               <Text
                 fontSize="2xl"
@@ -265,9 +302,9 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
                         src={`${countriesFlags[index]}`}
                         alt={bulgarianCuisines[index]}
                         maxW="35px"
-                        ml="2px" // Adjust margin as needed
-                        mr="2px" // Adjust margin as needed
-                        mb="2px" // Add margin between flags
+                        ml="2px"
+                        mr="2px"
+                        mb="2px"
                       />
                     </Tooltip>
                   )
@@ -333,7 +370,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
           </Box>
         </Button>
       </SimpleGrid>
-      {favouriteMeals && favouriteMeals.split(", ").length === 5 && (
+      {favouriteMeals && favouriteMeals.split(", ").length >= 5 && (
         <Box mt="50px">
           <Flex alignItems="center" justifyContent="center">
             <HSeparator style={{ flex: 1, marginRight: "10px" }} />
@@ -358,16 +395,16 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
       )}
       <Flex alignItems="center" justifyContent="center">
         <Text
-          mt={!(favouriteMeals.split(", ").length === 5) ? "50px" : "25px"}
+          mt={!(favouriteMeals.split(", ").length >= 5) ? "50px" : "25px"}
           color="rgba(135, 140, 189, 0.3)"
           fontSize="xl"
           _hover={{ textDecoration: "underline", cursor: "pointer" }}
-          onClick={toggleFavouriteMeals}
+          onClick={toggleFavouriteMealsList}
         >
           Вижте вашите любими храни
         </Text>
       </Flex>
-      <Modal isOpen={showFavouriteMeals} onClose={toggleFavouriteMeals}>
+      <Modal isOpen={showFavouriteMeals} onClose={toggleFavouriteMealsList}>
         <ModalOverlay />
         <ModalContent borderRadius="20px" mx={isSmallScreen ? "20px" : "0px"}>
           <ModalHeader fontSize="2xl" fontWeight="bold" textAlign="center">
@@ -383,9 +420,34 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
             <Box mt="15px" textAlign="center">
               {favouriteMeals ? (
                 favouriteMeals.split(", ").map((meal, index) => (
-                  <Text key={index} fontSize="lg" fontWeight="medium" mb="5px">
-                    🍽️ {meal}
-                  </Text>
+                  <Flex
+                    key={index}
+                    fontSize="lg"
+                    fontWeight="medium"
+                    mb="5px"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Text>🍽️ {meal}</Text>
+                    <Button
+                      onClick={() => toggleMealFavorite(meal)}
+                      size="sm"
+                      variant="ghost"
+                      ml="auto"
+                    >
+                      <Icon
+                        transition="0.2s linear"
+                        w="22px"
+                        h="22px"
+                        as={
+                          favouriteMealStatus[meal] ? IoHeart : IoHeartOutline
+                        }
+                        color={
+                          favouriteMealStatus[meal] ? "red.500" : "gray.500"
+                        }
+                      />
+                    </Button>
+                  </Flex>
                 ))
               ) : (
                 <Text fontSize="lg" fontStyle="italic">
@@ -400,7 +462,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
             <Button
               bg="#7c6bff"
               color="white"
-              onClick={toggleFavouriteMeals}
+              onClick={toggleFavouriteMealsList}
               px="20px"
             >
               Излез
