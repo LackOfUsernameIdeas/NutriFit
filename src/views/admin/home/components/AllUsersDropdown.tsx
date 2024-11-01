@@ -1,28 +1,18 @@
 import React from "react";
-// Chakra imports
 import {
   Icon,
   SimpleGrid,
   useColorModeValue,
   useMediaQuery,
-  CircularProgress,
   Center
 } from "@chakra-ui/react";
-// Assets
-// Custom components
 import { MdOutlineMale, MdOutlineFemale } from "react-icons/md";
 import Dropdown from "components/dropdowns/Dropdown";
 import MiniStatistics from "components/card/MiniStatistics";
 import Card from "components/card/Card";
 import IconBox from "components/icons/IconBox";
 import { BsPersonFillUp } from "react-icons/bs";
-
-// Types
-import {
-  GenderAverageStats,
-  Deviations
-} from "../../../../variables/weightStats";
-
+import { GenderAverageStats } from "../../../../variables/weightStats";
 import { ColumnAvaragesChart } from "components/charts/BarCharts";
 import { LineAvaragesChart } from "components/charts/LineCharts";
 import Loading from "views/admin/weightStats/components/Loading";
@@ -38,16 +28,20 @@ export default function AllUsersDropdown({
   dropdownVisible,
   handleDropdownToggle
 }: GenderedDropdownsProps) {
+  // State за зареждане
   const [loading, setLoading] = React.useState(true);
+
+  // Определяне на цвета на диаграмите в зависимост от тъмния или светъл режим
   const chartsColor = useColorModeValue("brand.500", "white");
 
+  // useEffect при промяна на averageStats за спиране на зареждането, когато данните са налични
   React.useEffect(() => {
-    // If averageStats has been provided and loading is true, set loading to false
     if (averageStats && loading) {
       setLoading(false);
     }
   }, [averageStats, loading]);
 
+  // Данни за диаграмите за мъже
   const maleChartData = [
     averageStats.male.averageCalories,
     averageStats.male.averageProtein,
@@ -57,6 +51,7 @@ export default function AllUsersDropdown({
     averageStats.male.averageBodyFatPercentage
   ];
 
+  // Данни за диаграмите за жени
   const femaleChartData = [
     averageStats.female.averageCalories,
     averageStats.female.averageProtein,
@@ -66,6 +61,7 @@ export default function AllUsersDropdown({
     averageStats.female.averageBodyFatPercentage
   ];
 
+  // Надписи за статистиките на всички потребители
   const allUsersStatsLabels = [
     "Калории",
     "Протеин",
@@ -74,6 +70,8 @@ export default function AllUsersDropdown({
     "Тегло",
     "% телесни мазнини"
   ];
+
+  // Проверка дали е на малък екран
   const [isSmallScreen] = useMediaQuery("(max-width: 767px)");
 
   return (

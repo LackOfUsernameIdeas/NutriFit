@@ -1,5 +1,4 @@
 import React from "react";
-// Chakra imports
 import {
   Box,
   Flex,
@@ -28,40 +27,11 @@ import backgroundImageWhite from "../../../assets/img/layout/blurry-gradient-hai
 import backgroundImageDark from "../../../assets/img/layout/blurry-gradient-haikei-dark.svg";
 import { GenderAverageStats, Deviations } from "../../../variables/weightStats";
 import DeviationsAndHealthStatuses from "./components/DeviationsAndHealthStatuses";
-
-interface LinearGradientTextProps {
-  text: any;
-  gradient: string;
-  fontSize?: string;
-  fontFamily?: string;
-  mr?: string;
-}
-
-const LinearGradientText: React.FC<LinearGradientTextProps> = ({
-  text,
-  gradient,
-  fontSize,
-  fontFamily,
-  mr
-}) => (
-  <Text
-    as="span"
-    fontSize={fontSize}
-    fontFamily={fontFamily}
-    fontWeight="bold"
-    mr={mr}
-    style={{
-      backgroundImage: gradient,
-      WebkitBackgroundClip: "text",
-      color: "transparent"
-    }}
-  >
-    {text}
-  </Text>
-);
+import LinearGradientText from "./components/LinearGradientText";
 
 export default function UserReports() {
   const { colorMode } = useColorMode();
+  // Избор на фоново изображение в зависимост от режима на цветове
   const backgroundImage =
     colorMode === "light" ? backgroundImageWhite : backgroundImageDark;
   const chartsColor = useColorModeValue("brand.500", "white");
@@ -80,6 +50,7 @@ export default function UserReports() {
     { bg: "secondaryGray.200" },
     { bg: "whiteAlpha.100" }
   );
+
   // State-ове за данните от нашето API
   const [allMeals, setAllMeals] = React.useState<SuggestedMeal[] | []>([
     {
@@ -139,6 +110,7 @@ export default function UserReports() {
     React.useState<string[]>([]);
   const [allUsersHealthStatesData, setAllUsersHealthStatesData] =
     React.useState<number[]>([]);
+
   // State-ове за дропдауните
   const [dropdownVisible, setDropdownVisible] = React.useState(false);
   const handleDropdownToggle = () => {
@@ -149,6 +121,7 @@ export default function UserReports() {
   const handleDropdownToggleMale = () => {
     setDropdownVisibleMale(!dropdownVisibleMale);
   };
+
   const [dropdownVisibleFemale, setDropdownVisibleFemale] =
     React.useState(true);
   const handleDropdownToggleFemale = () => {
@@ -192,7 +165,6 @@ export default function UserReports() {
         const top10meals = await response.json();
 
         console.log("top10meals: ", top10meals.top10meals);
-        // Set your state variables accordingly
         setAllMeals(top10meals.top10meals);
         setMealLoading(false);
       } catch (error) {
@@ -222,7 +194,6 @@ export default function UserReports() {
         const { openAI, gemini } = await response.json();
 
         console.log("openAI: ", openAI, "gemini: ", gemini);
-        // Set your state variables accordingly
         setDeviations({
           openAI: {
             averageDeviation: openAI.averageDeviation,
@@ -278,6 +249,7 @@ export default function UserReports() {
 
     fetchData();
   }, []);
+
   // useEffect за дърпане на средните данни на потребителите.
   React.useEffect(() => {
     const fetchData = async () => {
@@ -306,6 +278,7 @@ export default function UserReports() {
   }, []);
 
   console.log("averageStats: ", averageStats);
+  // Надписи за графиката
   const barChartLabels = allMeals.slice(0, 5).map((entry) => {
     const words = entry.name.split(" ");
     const wordGroups = [];
@@ -319,6 +292,8 @@ export default function UserReports() {
     return wordGroups;
   });
   console.log(barChartLabels);
+
+  // Данните за графиката
   const barChartForTopSuggestions = allMeals
     .slice(0, 5)
     .map((entry) => entry.count);

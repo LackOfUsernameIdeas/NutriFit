@@ -1,5 +1,4 @@
 import React from "react";
-// Chakra imports
 import {
   Box,
   Icon,
@@ -7,11 +6,8 @@ import {
   Image,
   Center,
   SimpleGrid,
-  CircularProgress,
   useColorModeValue
 } from "@chakra-ui/react";
-// Assets
-// Custom components
 import { ColumnChart } from "components/charts/BarCharts";
 import MiniStatistics from "components/card/MiniStatistics";
 import Card from "components/card/Card";
@@ -19,8 +15,6 @@ import IconBox from "components/icons/IconBox";
 import { GiWeightScale } from "react-icons/gi";
 import ChatGPT from "../../../../assets/img/layout/chatlogo.png";
 import Gemini from "../../../../assets/img/layout/gemini.png";
-
-// Types
 import { Deviations } from "../../../../variables/weightStats";
 import Loading from "views/admin/weightStats/components/Loading";
 
@@ -35,14 +29,24 @@ export default function DeviationsAndHealthStatuses({
   allUsersHealthStatesData,
   deviations
 }: DeviationsProps) {
+  // Цвета на диаграмите в зависимост от тъмния или светъл режим
   const chartsColor = useColorModeValue("brand.500", "white");
+
+  // Градиентен фон за светъл и тъмен режим
   const gradientLight = "linear-gradient(90deg, #422afb 0%, #715ffa 100%)";
   const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)";
   const gradient = useColorModeValue(gradientLight, gradientDark);
+
+  // Цвета на рамката в зависимост от режима
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+
+  // State за зареждане на отклонения
   const [deviationsLoading, setDeviationsLoading] = React.useState(true);
+
+  // State за зареждане на здравословното състояние
   const [healthLoading, setHealthLoading] = React.useState(false);
 
+  // useEffect за следене на отклоненията и обновяване на състоянието на зареждане
   React.useEffect(() => {
     if (!deviations) {
       setDeviationsLoading(true);
@@ -51,6 +55,7 @@ export default function DeviationsAndHealthStatuses({
     }
   }, [deviations]);
 
+  // useEffect за следене на данните за здравословното състояние и обновяване на състоянието на зареждане
   React.useEffect(() => {
     if (!allUsersHealthStatesLabels || !allUsersHealthStatesData) {
       setHealthLoading(true);

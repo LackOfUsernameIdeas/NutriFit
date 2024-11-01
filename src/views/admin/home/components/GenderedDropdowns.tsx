@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Icon, SimpleGrid, CircularProgress, Center } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Icon, SimpleGrid, Center } from "@chakra-ui/react";
 import Dropdown from "components/dropdowns/Dropdown";
 import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
@@ -27,8 +27,8 @@ export default function GenderedDropdowns({
 }: GenderedDropdownsProps) {
   const [loading, setLoading] = useState(true);
 
+  // useEffect при промяна на averageStats за спиране на зареждането, когато данните са налични
   useEffect(() => {
-    // If averageStats has been provided and loading is true, set loading to false
     if (averageStats && loading) {
       setLoading(false);
     }
