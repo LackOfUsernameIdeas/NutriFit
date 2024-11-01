@@ -1,5 +1,4 @@
 import React from "react";
-// Chakra imports
 import {
   Box,
   Flex,
@@ -8,25 +7,21 @@ import {
   Text,
   IconButton
 } from "@chakra-ui/react";
-// Assets
 import FadeInWrapper from "components/wrapper/FadeInWrapper";
-// Custom components
 import Loading from "views/admin/weightStats/components/Loading";
 import LeaderboardItem from "./components/LeaderboardItem";
-
 import Card from "components/card/Card";
 import { useSpring, animated } from "react-spring";
 import { ColumnChart } from "components/charts/BarCharts";
-
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { SuggestedMeal } from "../../../variables/weightStats";
 import Dropdown from "components/dropdowns/Dropdown";
+
 interface DropdownState {
   currentPage: number;
 }
 
 export default function TopMeals() {
-  // Chakra Color Mode
   const chartsColor = useColorModeValue("brand.500", "white");
   const [loading, setLoading] = React.useState(true);
   const dropdownBoxBg = useColorModeValue("secondaryGray.300", "navy.700");
@@ -34,102 +29,29 @@ export default function TopMeals() {
   const [dropdownState, setDropdownState] = React.useState<DropdownState>({
     currentPage: 0
   });
-  const [allMeals, setAllMeals] = React.useState<SuggestedMeal[] | []>([
-    {
-      name: "Tova",
-      count: 2,
-      mealData: {
-        totals: {
-          calories: 424,
-          carbohydrates: 2135432,
-          grams: 1233412,
-          fat: 124,
-          protein: 124
-        },
-        recipeQuantity: 235,
-        image:
-          "https://recepti.gotvach.bg/files/lib/250x250/vitaminozna-salata-pecheni-orehi.webp",
-        ingredients: ["wfwfwf", "fgwfwfwf"],
-        name: "string",
-        instructions: ["wfwfwf", "fgwfwfwf"]
-      }
+  const defaultMealData = {
+    totals: {
+      calories: 424,
+      carbohydrates: 2135432,
+      grams: 1233412,
+      fat: 124,
+      protein: 124
     },
-    {
-      name: "Tova",
-      count: 1,
-      mealData: {
-        totals: {
-          calories: 424,
-          carbohydrates: 2135432,
-          grams: 1233412,
-          fat: 124,
-          protein: 124
-        },
-        recipeQuantity: 235,
-        image:
-          "https://recepti.gotvach.bg/files/lib/250x250/vitaminozna-salata-pecheni-orehi.webp",
-        ingredients: ["wfwfwf", "fgwfwfwf"],
-        name: "string",
-        instructions: ["wfwfwf", "fgwfwfwf"]
-      }
-    },
-    {
-      name: "Tova",
-      count: 1,
-      mealData: {
-        totals: {
-          calories: 424,
-          carbohydrates: 2135432,
-          grams: 1233412,
-          fat: 124,
-          protein: 124
-        },
-        recipeQuantity: 235,
-        image:
-          "https://recepti.gotvach.bg/files/lib/250x250/vitaminozna-salata-pecheni-orehi.webp",
-        ingredients: ["wfwfwf", "fgwfwfwf"],
-        name: "string",
-        instructions: ["wfwfwf", "fgwfwfwf"]
-      }
-    },
-    {
-      name: "Tova",
-      count: 1,
-      mealData: {
-        totals: {
-          calories: 424,
-          carbohydrates: 2135432,
-          grams: 1233412,
-          fat: 124,
-          protein: 124
-        },
-        recipeQuantity: 235,
-        image:
-          "https://recepti.gotvach.bg/files/lib/250x250/vitaminozna-salata-pecheni-orehi.webp",
-        ingredients: ["wfwfwf", "fgwfwfwf"],
-        name: "string",
-        instructions: ["wfwfwf", "fgwfwfwf"]
-      }
-    },
-    {
-      name: "Tova",
-      count: 1,
-      mealData: {
-        totals: {
-          calories: 424,
-          carbohydrates: 2135432,
-          grams: 1233412,
-          fat: 124,
-          protein: 124
-        },
-        recipeQuantity: 235,
-        image:
-          "https://recepti.gotvach.bg/files/lib/250x250/vitaminozna-salata-pecheni-orehi.webp",
-        ingredients: ["wfwfwf", "fgwfwfwf"],
-        name: "string",
-        instructions: ["wfwfwf", "fgwfwfwf"]
-      }
-    }
+    recipeQuantity: 235,
+    image:
+      "https://recepti.gotvach.bg/files/lib/250x250/vitaminozna-salata-pecheni-orehi.webp",
+    ingredients: ["wfwfwf", "fgwfwfwf"],
+    name: "string",
+    instructions: ["wfwfwf", "fgwfwfwf"]
+  };
+
+  // State за всички ястия
+  const [allMeals, setAllMeals] = React.useState<SuggestedMeal[]>([
+    { name: "Tova", count: 2, mealData: defaultMealData },
+    { name: "Tova", count: 1, mealData: defaultMealData },
+    { name: "Tova", count: 1, mealData: defaultMealData },
+    { name: "Tova", count: 1, mealData: defaultMealData },
+    { name: "Tova", count: 1, mealData: defaultMealData }
   ]);
   const totalPages = Math.ceil(allMeals.length / ITEMS_PER_PAGE);
 
@@ -147,7 +69,6 @@ export default function TopMeals() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("tryyy");
         const response = await fetch("https://nutri-api.noit.eu/orderedMeals", {
           headers: {
             "x-api-key": "349f35fa-fafc-41b9-89ed-ff19addc3494"
@@ -159,10 +80,8 @@ export default function TopMeals() {
         const orderedMeals = await response.json();
 
         console.log("Sorted meals by frequency:", orderedMeals);
-        // Set only the top 10 meals
         setAllMeals(orderedMeals);
         setLoading(false);
-        console.log("FETCHED!");
       } catch (error) {
         console.error("Error fetching meals:", error);
         setLoading(false);
@@ -190,9 +109,6 @@ export default function TopMeals() {
     dropdownState.currentPage * ITEMS_PER_PAGE,
     (dropdownState.currentPage + 1) * ITEMS_PER_PAGE
   );
-
-  console.log("all Meals: ", allMeals);
-  console.log("meals to show: ", mealsToShow);
 
   return (
     <FadeInWrapper>

@@ -27,6 +27,21 @@ import MiniStatistics from "components/card/MiniStatistics";
 import { ColumnChart } from "components/charts/BarCharts";
 import { SuggestedMeal, NutrientMeal } from "variables/weightStats";
 
+/**
+ * Компонент за показване на елемент от класацията.
+ *
+ * @param {Object} props - Параметри на компонента.
+ * @param {string} props.image - URL на изображението.
+ * @param {string} props.name - Име на ястието.
+ * @param {string} [props.count] - Брой (опционално).
+ * @param {string[]} props.instructions - Инструкции за приготвяне.
+ * @param {string[]} props.ingredients - Съставки.
+ * @param {any} props.totals - Общи стойности (калории, протеини и т.н.).
+ * @param {SuggestedMeal[] | NutrientMeal[]} props.topMeals - Най-добрите ястия.
+ * @param {boolean} [props.keepOpen] - Дали да остане отворено (опционално).
+ *
+ * @returns {JSX.Element} Връща JSX елемент на компонента.
+ */
 export default function LeaderboardItem(props: {
   image: string;
   name: string;
@@ -47,6 +62,8 @@ export default function LeaderboardItem(props: {
     topMeals,
     keepOpen
   } = props;
+
+  // Определяне на цветови стойности в зависимост от режима на цветовете
   const boxBg = useColorModeValue("secondaryGray.300", "#263363");
   const textColor = useColorModeValue("brands.900", "white");
   const bgItem = useColorModeValue(
@@ -55,17 +72,23 @@ export default function LeaderboardItem(props: {
   );
   const textColorDate = useColorModeValue("secondaryGray.600", "white");
   const chartsColor = useColorModeValue("brand.500", "white");
+
+  // Състояния за видимост на дропдауна и мини статистиките
   const [dropdownVisible, setDropdownVisible] = React.useState(
     keepOpen || false
   );
   const [miniStatisticsVisible, setMiniStatisticsVisible] =
     React.useState(false);
   const [renderDropdown, setRenderDropdown] = React.useState(false);
+
   const borderColor = useColorModeValue("secondaryGray.200", "whiteAlpha.200");
+
+  // Намиране на ранга на ястието в класацията
   const rank = topMeals
     ? topMeals.findIndex((meal) => meal.name === name) + 1
     : null;
 
+  // Референции за модалните прозорци
   const cancelRefBMIAlert = React.useRef();
   const {
     isOpen: isOpenBMIAlert,
@@ -80,10 +103,12 @@ export default function LeaderboardItem(props: {
     onClose: onCloseIngredients
   } = useDisclosure();
 
+  // Функция за управление на видимостта на дропдауна
   const handleDropdownToggle = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
+  // Анимация за дропдауна
   const slideAnimationDrop = useSpring({
     opacity: miniStatisticsVisible ? 1 : 0,
     transform: `translateY(${dropdownVisible ? -50 : -90}px)`,
@@ -93,6 +118,7 @@ export default function LeaderboardItem(props: {
     }
   });
 
+  // useEffect за управление на позицията на мини статистиките при отваряне/затваряне на дропдауна
   React.useEffect(() => {
     const handleRestSlidePositionChange = async () => {
       if (dropdownVisible) {
@@ -112,6 +138,7 @@ export default function LeaderboardItem(props: {
     handleRestSlidePositionChange();
   }, [dropdownVisible]);
 
+  // useEffect за управление на рендирането на дропдауна при инициализация
   React.useEffect(() => {
     if (keepOpen) {
       setRenderDropdown(true);
@@ -119,6 +146,7 @@ export default function LeaderboardItem(props: {
     }
   }, [keepOpen]);
 
+  // Определяне на размерите на екрана
   const [isSmallScreen] = useMediaQuery("(max-width: 1400px)");
   const [isPhoneScreen] = useMediaQuery("(max-width: 767px)");
   const [isImageSquished] = useMediaQuery(
@@ -126,6 +154,7 @@ export default function LeaderboardItem(props: {
   );
   const gridColumnCount = isSmallScreen ? 1 : 2;
 
+  // Настройки за размерите на изображението
   const imageMinSizeSquishyPrevention = isImageSquished ? "470px" : "0px";
   const imageMaxSizeSquishyPrevention = isImageSquished ? "800px" : "500px";
 
