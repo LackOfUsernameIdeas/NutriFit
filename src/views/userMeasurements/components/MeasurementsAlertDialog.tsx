@@ -13,6 +13,13 @@ import { useDisclosure, Button } from "@chakra-ui/react";
 
 import { UserData } from "../../../variables/weightStats";
 
+/**
+ * Компонент за показване на диалогов прозорец за измервания.
+ * @param {Object} props - Свойства на компонента.
+ * @param {function} props.handleSubmit - Функция, която се извиква при изпращане на данните.
+ * @param {UserData} props.userData - Обект с данни на потребителя.
+ * @param {boolean} props.checkUpdate - Показва дали е актуализация.
+ */
 function MeasurementsAlertDialog(props: {
   handleSubmit: (event: React.FormEvent) => void;
   userData: UserData;
@@ -38,14 +45,14 @@ function MeasurementsAlertDialog(props: {
       localStorage.getItem("lastTypedValues") || "{}"
     );
 
-    // Check if stored values are different from current valuesToCheck
+    // Проверка дали съхранените стойности се различават от текущите valuesToCheck
     if (
       !Object.keys(storedValues).every(
         (key) =>
           storedValues[key] === valuesToCheck[key as keyof typeof valuesToCheck]
       )
     ) {
-      // If they are different, update the values to check
+      // Ако са различни, актуализирайте стойностите за проверка
       setValuesToCheck(storedValues as typeof valuesToCheck);
     }
   }, [props.userData]);
@@ -59,9 +66,15 @@ function MeasurementsAlertDialog(props: {
       setButtonText("Изпратете");
     }
   }, [props.checkUpdate]);
+
+  /**
+   * Превежда ключа на български.
+   * @param {string} key - Ключ за превод.
+   * @returns {string} - Преведеният текст.
+   */
   const translateKey = (key: any) => {
-    // Replace this logic with your actual translation logic
-    // For simplicity, let's assume a simple translation for demonstration purposes
+    // Заменете тази логика с вашата реална логика за превод
+    // За простота, да приемем, че имаме прост превод за демонстрационни цели
     switch (key) {
       case "height":
         return "Височина";

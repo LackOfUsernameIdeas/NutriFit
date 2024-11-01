@@ -17,28 +17,18 @@ import {
   AlertDialogFooter,
   useDisclosure,
   useColorModeValue,
-  useColorMode,
   Box
 } from "@chakra-ui/react";
 import { MdOutlineInfo } from "react-icons/md";
 
-import backgroundImageWhite from "../../../../assets/img/layout/blurry-gradient-haikei-light.svg";
-import backgroundImageDark from "../../../../assets/img/layout/blurry-gradient-haikei-dark.svg";
-
+/**
+ * Компонент, който показва детайли за BMI на малък екран.
+ *
+ * @component
+ * @returns {JSX.Element}
+ *
+ */
 const BMIDetailsSmallScreen = () => {
-  // Color values
-  const { colorMode } = useColorMode();
-  const backgroundImage =
-    colorMode === "light" ? backgroundImageWhite : backgroundImageDark;
-  const chartsColor = useColorModeValue("brand.500", "white");
-  const fontWeight = useColorModeValue("550", "100");
-  const tipFontWeight = useColorModeValue("500", "100");
-  const boxBg = useColorModeValue("secondaryGray.300", "navy.700");
-  const gradientLight = "linear-gradient(90deg, #422afb 0%, #715ffa 50%)";
-  const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)";
-  const gradient = useColorModeValue(gradientLight, gradientDark);
-  const dropdownBoxBg = useColorModeValue("secondaryGray.300", "navy.700");
-  const dropdownActiveBoxBg = useColorModeValue("#d8dced", "#171F3D");
   const textColor = useColorModeValue("black", "white");
   const infoBoxIconColor = useColorModeValue("black", "white");
   const bgList = useColorModeValue("secondaryGray.150", "whiteAlpha.100");
@@ -56,30 +46,25 @@ const BMIDetailsSmallScreen = () => {
     { bg: "secondaryGray.300" },
     { bg: "whiteAlpha.100" }
   );
-  const cancelRefPerfectWeightAlert = React.useRef();
+  // Създава референции за cancel бутоните в диалоговите прозорци
   const cancelRefStatus = React.useRef();
   const cancelRefBMIAlert = React.useRef();
-  const {
-    isOpen: isOpenPerfectWeightAlert,
-    onOpen: onOpenPerfectWeightAlert,
-    onClose: onClosePerfectWeightAlert
-  } = useDisclosure();
+
+  // Диспечер за управление на отварянето и затварянето на статус диалогов прозорец
   const {
     isOpen: isOpenStatus,
     onOpen: onOpenStatus,
     onClose: onCloseStatus
   } = useDisclosure();
 
+  // Диспечер за управление на отварянето и затварянето на BMI предупреждение диалогов прозорец
   const {
     isOpen: isOpenBMIAlert,
     onOpen: onOpenBMIAlert,
     onClose: onCloseBMIAlert
   } = useDisclosure();
 
-  // State за разкриване на информация за менюто с информация
-  const { isOpen: isOpenPerfectWeight, onClose: onClosePerfectWeight } =
-    useDisclosure();
-
+  // Диспечер за управление на отварянето и затварянето на BMI диалогов прозорец
   const {
     isOpen: isOpenBMI,
     onOpen: onOpenBMI,

@@ -79,12 +79,10 @@ export default function TopMeals() {
 
         setLoading(false);
 
-        // Fetch all fat meals in the background
         console.log("Fetching remaining fat meals...");
         getFirstAndLastTopMealsByCollection("topFatMeals").then(
           (allFatMeals) => {
             console.log("All Fat Meals: ", allFatMeals);
-            // Update state to include the remaining fat meals
             setAllMeals(allFatMeals as NutrientMeal[]);
             const lowFatMeals = allFatMeals
               .slice()
@@ -106,7 +104,6 @@ export default function TopMeals() {
     fetchData();
 
     return () => {
-      // Cleanup function to be called when component unmounts
       isMounted = false;
     };
   }, []);

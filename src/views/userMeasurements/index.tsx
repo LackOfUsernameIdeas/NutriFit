@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
 import { fetchAdditionalUserData } from "database/getFunctions";
-// Chakra imports
 import {
   Box,
   Flex,
@@ -16,12 +14,9 @@ import {
   useColorModeValue,
   Image
 } from "@chakra-ui/react";
-
 import MeasurementsAlertDialog from "./components/MeasurementsAlertDialog";
-// Custom components
 import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/measurements/Default";
-// Assets
 import neckImgDark from "../../assets/img/layout/neck-measurement.png";
 import waistImgDark from "../../assets/img/layout/waist-measurement.png";
 import hipImgDark from "../../assets/img/layout/hip-measurement.png";
@@ -30,13 +25,7 @@ import waistImgWhite from "../../assets/img/layout/waist-measurement-white.png";
 import hipImgWhite from "../../assets/img/layout/hip-measurement-white.png";
 import illustration from "assets/img/auth/auth.png";
 import Loading from "views/admin/weightStats/components/Loading";
-import {
-  BMIInfo,
-  BodyMass,
-  UserData,
-  Goal,
-  WeightDifference
-} from "../../variables/weightStats";
+import { UserData, WeightDifference } from "../../variables/weightStats";
 
 interface UserMeasurements {
   userData: UserData;
@@ -215,10 +204,10 @@ const UserMeasurements = () => {
 
       const result = await response.json();
       console.log("Server response SAVING:", result);
-      return result; // Return the result to indicate completion
+      return result;
     } catch (error) {
       console.error("Error triggering fetch and save:", error);
-      throw error; // Rethrow the error to indicate failure
+      throw error;
     }
   };
   // Функция за генериране на статистики
@@ -226,15 +215,13 @@ const UserMeasurements = () => {
     setIsLoading(true);
 
     try {
-      const saveResult = await saveUserData(); // Wait for saveUserData to finish
+      const saveResult = await saveUserData();
 
-      // Only proceed if saveUserData is successful
       if (saveResult) {
         triggerFetchAndSaveAllData();
         history.push("/admin/home");
       }
     } catch (error) {
-      // Handle error
       console.error("Error generating stats:", error);
     } finally {
       setIsLoading(false);
@@ -309,7 +296,6 @@ const UserMeasurements = () => {
     if (isUserDataValid()) {
       try {
         await generateStats();
-        // Save additional user data to the server
         const response = await fetch(
           "https://nutri-api.noit.eu/processUserData",
           {
@@ -322,14 +308,11 @@ const UserMeasurements = () => {
           }
         );
         if (response.ok) {
-          // Log the response data to the console
           const responseData = await response.json();
           console.log("Server response:", responseData);
 
-          // Data processed successfully
           setIsFilledOut(true);
         } else {
-          // Handle server error
           console.error("Server error:", response.statusText);
           setError("Failed to process data on the server.");
         }
@@ -353,30 +336,18 @@ const UserMeasurements = () => {
           const additionalData = await fetchAdditionalUserData(
             auth.currentUser.uid
           );
-          console.log("DEBUG ADDITIONAL DATA", additionalData);
-          // Extract date keys from additionalData
           const dateKeys = Object.keys(additionalData).filter((key) =>
             /^\d{4}-\d{2}-\d{2}$/.test(key)
           );
-          console.log("DEBUG DATE KEYS", dateKeys);
-          // Sort date keys in descending order
           dateKeys.sort(
             (a, b) => new Date(b).getTime() - new Date(a).getTime()
           );
-          console.log("DEBUG DATE KEYS SORTED", dateKeys);
-          // Find the first date before today
           const today = new Date().toISOString().slice(0, 10);
           const lastSavedDate = dateKeys.find((date) => date < today);
           const rawUserDataForToday = additionalData[today];
           const rawUserDataForLastSavedDate = additionalData[lastSavedDate];
-          console.log("DEBUG LAST SAVED DATE", lastSavedDate);
-          console.log(
-            "DEBUG rawUserDataForLastSavedDate",
-            additionalData[lastSavedDate]
-          );
           if (isMounted.current) {
             setUserDataLastSavedDate(rawUserDataForLastSavedDate);
-            console.log("LAST DATE: ", userDataLastSavedDate);
             setUserDataForToday(rawUserDataForToday);
             setIsTodaysDataFetched(true);
             setIsLoading(false);
@@ -425,21 +396,10 @@ const UserMeasurements = () => {
     });
   }, [perfectWeight, userData]);
 
-  // React.useEffect(() => {
-  //   // Check if numeric values in userData are different from 0 and not null
-  //   const areValuesValid = Object.values(userData).every(
-  //     (value) => value !== 0
-  //   );
-
-  //   if (areValuesValid) {
-  //     generateStats();
-  //   }
-  // }, [userData]);
   const neckImg = useColorModeValue(neckImgDark, neckImgWhite);
   const waistImg = useColorModeValue(waistImgDark, waistImgWhite);
   const hipImg = useColorModeValue(hipImgDark, hipImgWhite);
   const [isSmallScreen] = useMediaQuery("(max-width: 767px)");
-  // {isLoading || !isTodaysDataFetched || isLoadingOnMount ? (
   return (
     <Box>
       {isLoading || !isTodaysDataFetched || isLoadingOnMount ? (

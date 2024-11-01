@@ -74,7 +74,6 @@ export default function TopMeals() {
 
         console.log("First 50 Meals: ", first50Meals);
 
-        // Display the first 50 meals
         setAllMeals(first50Meals as NutrientMeal[]);
 
         const initialLowProteinMeals = first50Meals
@@ -86,12 +85,10 @@ export default function TopMeals() {
 
         setLeastProteinFoods(initialLowProteinMeals);
         setLoading(false);
-        // Fetch all meals in the background
         console.log("Fetching remaining meals...");
         getFirstAndLastTopMealsByCollection("topProteinMeals").then(
           (allMeals) => {
             console.log("All Meals: ", allMeals);
-            // Update state to include the remaining meals
             setAllMeals(allMeals as NutrientMeal[]);
             const lowProteinMeals = allMeals
               .slice()

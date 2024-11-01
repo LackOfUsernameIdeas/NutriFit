@@ -7,7 +7,6 @@ import {
   setPersistence,
   browserSessionPersistence
 } from "firebase/auth";
-// Chakra imports
 import { saveGenderOnSignUp } from "database/setFunctions";
 import {
   Box,
@@ -29,10 +28,8 @@ import {
   Checkbox
 } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
-// Custom components
 import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
-// Assets
 import illustration from "assets/img/auth/auth.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";

@@ -72,7 +72,6 @@ export default function TopMeals() {
 
         console.log("First 50 Carbohydrate Meals: ", first50CarbsMeals);
 
-        // Display the first 50 carbohydrate meals
         setAllMeals(first50CarbsMeals as NutrientMeal[]);
 
         const initialLowCarbsMeals = first50CarbsMeals
@@ -86,12 +85,10 @@ export default function TopMeals() {
 
         setLoading(false);
 
-        // Fetch all carbohydrate meals in the background
         console.log("Fetching remaining carbohydrate meals...");
         getFirstAndLastTopMealsByCollection("topCarbohydratesMeals").then(
           (allCarbsMeals) => {
             console.log("All Carbohydrate Meals: ", allCarbsMeals);
-            // Update state to include the remaining carbohydrate meals
             setAllMeals(allCarbsMeals as NutrientMeal[]);
             const lowCarbsMeals = allCarbsMeals
               .slice()

@@ -1,18 +1,13 @@
 import React from "react";
-// Chakra imports
 import {
-  Icon,
   SimpleGrid,
   useColorModeValue,
   useMediaQuery,
   Center
 } from "@chakra-ui/react";
 import { LineChart } from "components/charts/LineCharts";
-import { FaFireAlt } from "react-icons/fa";
 import Dropdown from "components/dropdowns/Dropdown";
-import MiniStatistics from "components/card/MiniStatistics";
 import Card from "components/card/Card";
-import IconBox from "components/icons/IconBox";
 import Loading from "views/admin/weightStats/components/Loading";
 
 interface GenderedDropdownsProps {
@@ -27,6 +22,21 @@ interface GenderedDropdownsProps {
   handleDropdownToggle: () => void;
 }
 
+/**
+ * Компонент за селектори на данни за промени в тялото.
+ * Използва графики и контролира видимостта на падащото меню.
+ *
+ * @param {Object} props - Входящи пропс.
+ * @param {string[]} props.lineChartLabels - Етикети за графиката.
+ * @param {number[]} props.lineChartForKilogramsData - Данни за килограми.
+ * @param {number[]} props.lineChartForBodyFatMassData - Данни за мастна маса.
+ * @param {number[]} props.lineChartForLeanBodyMassData - Данни за нежна телесна маса.
+ * @param {number[]} props.lineChartForDifferenceFromPerfectWeightData - Данни за разлика от идеално тегло.
+ * @param {number[]} props.lineChartForBMI - Данни за BMI.
+ * @param {number[]} props.lineChartForBodyFatData - Данни за мазнини в тялото.
+ * @param {boolean} props.dropdownVisible - Видимост на падащото меню.
+ * @param {Function} props.handleDropdownToggle - Функция за превключване на видимостта на падащото меню.
+ */
 function BodyChangeDropdown({
   lineChartLabels,
   lineChartForKilogramsData,

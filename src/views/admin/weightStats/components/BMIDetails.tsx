@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Flex,
   Text,
@@ -17,28 +17,19 @@ import {
   AlertDialogFooter,
   useDisclosure,
   useColorModeValue,
-  useColorMode,
   Box
 } from "@chakra-ui/react";
 import { MdOutlineInfo } from "react-icons/md";
 
-import backgroundImageWhite from "../../../../assets/img/layout/blurry-gradient-haikei-light.svg";
-import backgroundImageDark from "../../../../assets/img/layout/blurry-gradient-haikei-dark.svg";
-
-const BMIDetailsSmallScreen = () => {
-  // Color values
-  const { colorMode } = useColorMode();
-  const backgroundImage =
-    colorMode === "light" ? backgroundImageWhite : backgroundImageDark;
-  const chartsColor = useColorModeValue("brand.500", "white");
-  const fontWeight = useColorModeValue("550", "100");
-  const tipFontWeight = useColorModeValue("500", "100");
-  const boxBg = useColorModeValue("secondaryGray.300", "navy.700");
-  const gradientLight = "linear-gradient(90deg, #422afb 0%, #715ffa 50%)";
-  const gradientDark = "linear-gradient(90deg, #715ffa 0%, #422afb 100%)";
-  const gradient = useColorModeValue(gradientLight, gradientDark);
-  const dropdownBoxBg = useColorModeValue("secondaryGray.300", "navy.700");
-  const dropdownActiveBoxBg = useColorModeValue("#d8dced", "#171F3D");
+/**
+ * Компонент, който показва детайли за BMI.
+ *
+ * @component
+ * @returns {JSX.Element}
+ *
+ */
+const BMIDetails = () => {
+  // Определя цветовете в зависимост от режима на светлина/тъмнина
   const textColor = useColorModeValue("black", "white");
   const infoBoxIconColor = useColorModeValue("black", "white");
   const bgList = useColorModeValue("secondaryGray.150", "whiteAlpha.100");
@@ -56,35 +47,29 @@ const BMIDetailsSmallScreen = () => {
     { bg: "secondaryGray.300" },
     { bg: "whiteAlpha.100" }
   );
-  const cancelRefPerfectWeightAlert = React.useRef();
+
+  // Създаване на референции за cancel бутоните в диалоговите прозорци
   const cancelRefStatus = React.useRef();
   const cancelRefBMIAlert = React.useRef();
-  const {
-    isOpen: isOpenPerfectWeightAlert,
-    onOpen: onOpenPerfectWeightAlert,
-    onClose: onClosePerfectWeightAlert
-  } = useDisclosure();
+
+  // Диспатчери за управление на отварянето и затварянето на диалоговите прозорци
   const {
     isOpen: isOpenStatus,
     onOpen: onOpenStatus,
     onClose: onCloseStatus
-  } = useDisclosure();
+  } = useDisclosure(); // Диспечер за статус диалогов прозорец
 
   const {
     isOpen: isOpenBMIAlert,
     onOpen: onOpenBMIAlert,
     onClose: onCloseBMIAlert
-  } = useDisclosure();
-
-  // State за разкриване на информация за менюто с информация
-  const { isOpen: isOpenPerfectWeight, onClose: onClosePerfectWeight } =
-    useDisclosure();
+  } = useDisclosure(); // Диспечер за BMI предупреждение диалогов прозорец
 
   const {
     isOpen: isOpenBMI,
     onOpen: onOpenBMI,
     onClose: onCloseBMI
-  } = useDisclosure();
+  } = useDisclosure(); // Диспечер за BMI диалогов прозорец
 
   return (
     <Flex wrap="nowrap" alignItems="center">
@@ -105,9 +90,9 @@ const BMIDetailsSmallScreen = () => {
           _hover={bgHoverInfoBox}
           _focus={bgFocus}
           _active={bgFocus}
-          width="30px" // Use "width" instead of "w"
-          maxWidth="30px" // Use "maxWidth" instead of "maxW"
-          height="30px" // Set the height property as well
+          width="30px"
+          maxWidth="30px"
+          height="30px"
           lineHeight="50%"
           borderRadius="20px"
           ml="10px"
@@ -284,4 +269,4 @@ const BMIDetailsSmallScreen = () => {
   );
 };
 
-export default BMIDetailsSmallScreen;
+export default BMIDetails;
