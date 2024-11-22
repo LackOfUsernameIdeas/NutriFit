@@ -1,6 +1,5 @@
 import {
   Box,
-  Heading,
   Flex,
   List,
   ListItem,
@@ -15,14 +14,11 @@ import backgroundImageWhite from "../../assets/img/layout/layered-waves-haikei-w
 import backgroundImageDark from "../../assets/img/layout/layered-waves-haikei-dark.svg";
 
 import techStackImage from "../../assets/img/layout/techStack.jpg";
-import { getAuth } from "firebase/auth";
-import Cookies from "js-cookie";
 const Footer = (props: { isForLanding?: boolean }) => {
   const { isForLanding } = props;
   const { colorMode } = useColorMode();
 
   const footerColor = useColorModeValue("white", "#111c44");
-  const brandColor = useColorModeValue("brand.500", "white");
   const textColor = useColorModeValue("black", "white");
   const backgroundImage =
     colorMode === "light" ? backgroundImageWhite : backgroundImageDark;
@@ -43,19 +39,13 @@ const Footer = (props: { isForLanding?: boolean }) => {
       mt="auto"
     >
       <Box maxW="64rem" pb="2rem" mx="auto">
-        <Flex
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent="center" // Center the content on mobile
-        >
+        <Flex flexWrap="wrap" alignItems="start" justifyContent="center">
           <SimpleGrid
             columns={{ base: 1, md: 4, lg: 4 }}
             gap={{ base: "50px", md: "100px", lg: "100px" }}
             mb="20px"
             textAlign="center"
           >
-            {" "}
-            {/* Center text on mobile */}
             <Box mb={{ base: "1.5rem", lg: "0" }}>
               <Text
                 color={textColor}
@@ -79,15 +69,8 @@ const Footer = (props: { isForLanding?: boolean }) => {
                 Fit
               </Text>
               <List lineHeight="2" justifyContent="center">
-                <LinkItem
-                  text="НОИТ 2024"
-                  href="https://edusoft.fmi.uni-sofia.bg/"
-                />
                 <Text color="rgba(113, 128, 150, 1)" fontWeight="600">
-                  Проект 249
-                </Text>
-                <Text color="rgba(113, 128, 150, 1)" fontWeight="600">
-                  Калоян Костадинов
+                  НЕТИТ „Джон Атанасов”
                 </Text>
                 <Text color="rgba(113, 128, 150, 1)" fontWeight="600">
                   Ивайло Здравков
@@ -130,8 +113,8 @@ const Footer = (props: { isForLanding?: boolean }) => {
                   href="https://platform.openai.com/docs/overview"
                 />
                 <LinkItem
-                  text="Fitness Calculator API"
-                  href="https://rapidapi.com/malaaddincelik/api/fitness-calculator"
+                  text="VertexAI API"
+                  href="https://cloud.google.com/vertex-ai/docs/reference/rest"
                 />
                 <LinkItem
                   text="Chakra UI"
