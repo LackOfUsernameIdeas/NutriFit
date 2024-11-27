@@ -635,10 +635,7 @@ export default function MealPlannerForm(props: MealPlannerFormProps) {
       const responseJson = responseData.aiResponse;
 
       const stringToRepair = responseJson
-        .replace(/^```json([\s\S]*?)```$/, "$1")
-        .replace(/^```JSON([\s\S]*?)```$/, "$1")
-        .replace(/^```([\s\S]*?)```$/, "$1")
-        .replace(/^'|'$/g, "")
+        .replace(/^```json[\n\s]*([\s\S]*?)```[\n\s]*$/i, "$1")
         .trim();
       let jsonObject;
       try {
