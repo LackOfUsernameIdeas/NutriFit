@@ -1,6 +1,6 @@
 # NutriFit
 
-> **Integrated web nutrition platform** focused on **AI-driven meal planning** that makes **two AI models — GPT-5.2 and Gemini 3.5 Flash — generate a truly personalized, nutritionally accurate meal plan**. It measures how far each model deviates from the user's defined limits, and compares their performance against each other through a dedicated **head-to-head AI comparison panel**. Body metrics (BMI, body fat %, lean mass, ideal weight) are calculated and tracked daily, supported by **nearly 40 interactive Chart.js statistics**. The project was developed alongside a **React Native mobile app** (NutriFitMobile repo) mirroring core web features
+> **Integrated web nutrition platform** focused on **AI-driven meal planning** that makes **two AI models — GPT-5.2 and Gemini 3.5 Flash — generate a truly personalized, nutritionally accurate meal plan**. It measures how far each model deviates from the user's defined limits, and compares their performance against each other through a dedicated **head-to-head AI comparison panel**. Body metrics (BMI, body fat %, lean mass, ideal weight) are calculated and tracked daily, supported by **nearly 40 interactive Chart.js statistics**. The project was developed alongside a **React Native mobile app** (NutriFitMobile repository) mirroring core web features
 
 ---
 
