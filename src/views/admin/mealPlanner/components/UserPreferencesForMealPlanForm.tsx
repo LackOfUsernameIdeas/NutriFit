@@ -140,9 +140,8 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
       fieldNameBG: string
     ) => {
       if (value <= 0) {
-        errors[
-          fieldName
-        ] = `Моля, въведете валидна стойност за ${fieldNameBG}.`; // Добавяне на грешка при невалидна стойност
+        errors[fieldName] =
+          `Моля, въведете валидна стойност за ${fieldNameBG}.`; // Добавяне на грешка при невалидна стойност
       }
     };
 
@@ -188,7 +187,7 @@ const UserPreferencesForMealPlanForm: React.FC<UserPreferencesInputProps> = ({
     "https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Bulgaria.svg",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/1280px-Bandera_de_Espa%C3%B1a.svg.png",
     "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png",
-    "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/800px-Flag_of_France.svg.png"
+    "https://flagcdn.com/w80/fr.png"
   ];
 
   // useEffect за инициализиране на статуса на любимите ястия

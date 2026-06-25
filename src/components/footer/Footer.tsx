@@ -72,9 +72,6 @@ const Footer = (props: { isForLanding?: boolean }) => {
                 <Text color="rgba(113, 128, 150, 1)" fontWeight="600">
                   НЕТИТ „Джон Атанасов”
                 </Text>
-                <Text color="rgba(113, 128, 150, 1)" fontWeight="600">
-                  Ивайло Здравков
-                </Text>
                 <LinkItem
                   text="ПГИ Перник"
                   href="https://pgi-pernik.bg-schools.com/"

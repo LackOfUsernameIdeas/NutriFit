@@ -386,7 +386,7 @@ export default function MealPlannerForm(props: MealPlannerFormProps) {
             Authorization: `Bearer ${openAIKey}`
           },
           body: JSON.stringify({
-            model: "gpt-4-0125-preview",
+            model: "gpt-5.2",
             messages: [
               {
                 role: "user",
@@ -413,11 +413,10 @@ export default function MealPlannerForm(props: MealPlannerFormProps) {
         .replace(/^'|'$/g, "")
         .trim();
       console.log("unescapedData: ", unescapedData);
-      const escapedData = decodeURIComponent(unescapedData);
-      console.log("escapedData: ", escapedData);
+
       let data;
       try {
-        data = JSON.parse(escapedData);
+        data = JSON.parse(unescapedData);
         checkTotals(data);
       } catch (parseError) {
         throw new Error("Invalid JSON response from the server");
