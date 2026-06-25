@@ -17,7 +17,7 @@
 
 ```
 NutriFit/
-├── src/          # React + TypeScript frontend
+├── src/         # React + TypeScript frontend
 └── api          # Node.js + Express backend (not included in this repository))
 ```
 
