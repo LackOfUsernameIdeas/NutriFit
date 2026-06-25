@@ -17,8 +17,14 @@
 
 ```
 NutriFit/
-├── src/         # React + TypeScript frontend
-└── api          # Node.js + Express backend (not included in this repository))
+├── src/
+│   ├── views/          # Route-level interface: landing, auth, user measurements, admin
+│   ├── layouts/        # Route layouts wrapping views (landing, auth, user measurements, admin)
+│   ├── components/     # Reusable UI building blocks (cards, charts, tables, navbar, sidebar...)
+│   ├── database/       # Firebase connection and Firestore get/set/delete helpers
+│   ├── theme/          # Chakra UI theme configuration and overrides
+│   └── variables/      # Chart options, weight-stat helpers, and shared types
+└── api                 # Node.js + Express backend (not included in this repository)
 ```
 
 | Sub-project | Role                                                                                                                                           |
