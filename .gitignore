@@ -14,7 +14,7 @@ yarn.lock
 # production
 /build
 build
-src/database
+src/database/connection.ts
 
 # misc
 .DS_Store
@@ -27,6 +27,3 @@ src/database
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# folders
-src/database/
