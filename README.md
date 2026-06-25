@@ -50,7 +50,7 @@ REACT_APP_API_KEY=your_openai_api_key
 
 ### `api/nutrifit-ed16d-5f412500590f.json`
 
-Firebase Admin SDK service account key file. Download it from the Firebase Console under **Project Settings → Service Accounts → Generate new private key**. Place the downloaded file in the `api/` directory and make sure the filename matches the one referenced in `server.js`:
+Firebase Admin SDK service account key file. Download it from the Firebase Console. Place the downloaded file in the `api/` directory and make sure the filename matches the one referenced in `server.js`:
 
 ```js
 process.env.GOOGLE_APPLICATION_CREDENTIALS =
@@ -59,16 +59,21 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS =
 
 ### `api/firebase_credentials.json`
 
-Firebase client SDK configuration. Obtain it from the Firebase Console under **Project Settings → Your apps → SDK setup and configuration**:
+Firebase client SDK configuration. Obtain it from the Firebase Console:
 
 ```json
 {
-  "apiKey": "your_api_key",
-  "authDomain": "your_project.firebaseapp.com",
-  "projectId": "your_project_id",
-  "storageBucket": "your_project.appspot.com",
-  "messagingSenderId": "your_sender_id",
-  "appId": "your_app_id"
+  "type": "service_account",
+  "project_id": "your_project_id",
+  "private_key_id": "your_private_key_id",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-xxxxx@your_project.iam.gserviceaccount.com",
+  "client_id": "your_client_id",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-xxxxx%40your_project.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
 }
 ```
 
