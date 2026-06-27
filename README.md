@@ -4,6 +4,10 @@
 
 ---
 
+> **Note:** Ongoing **model upgrades** (due to **deprecation of older models**) have introduced occasional **inconsistencies** in meal naming and food image matching
+
+---
+
 ## Table of Contents
 
 - [Architecture](#architecture)
