@@ -104,7 +104,6 @@ npm i
 ### 2. Start the API
 
 ```bash
-cd api
 node server.js
 ```
 
